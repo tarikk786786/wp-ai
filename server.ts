@@ -5,6 +5,11 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 import * as wppconnect from '@wppconnect-team/wppconnect';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load environment variables from .env.local or .env
 dotenv.config({ path: path.resolve(__dirname, '.env.local') });
