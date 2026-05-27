@@ -9,3 +9,6 @@ coverage/
 db.json
 *.json.bak
 tokens/
+
+# Local Netlify folder
+.netlify
