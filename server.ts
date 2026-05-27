@@ -184,6 +184,8 @@ function initWhatsApp() {
 
   console.log("Starting WhatsApp connection session...");
   
+  const isLinux = process.platform === 'linux';
+  
   wppconnect.create({
     session: 'whatsapp-reply-agent',
     catchQR: (base64Qr, asciiQR, attempts, feedback) => {
@@ -203,11 +205,16 @@ function initWhatsApp() {
     },
     headless: 'new',
     devtools: false,
-    useChrome: true, // Speeds up Windows launch tremendously by utilizing local Google Chrome
+    useChrome: !isLinux, // Speeds up Windows launch natively, uses default Chrome on Linux Docker
     debug: false,
     logQR: false,
     autoClose: 0,
-    browserArgs: ['--no-sandbox', '--disable-setuid-sandbox']
+    browserArgs: [
+      '--no-sandbox', 
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu'
+    ]
   })
   .then((client) => {
     whatsappClient = client;
