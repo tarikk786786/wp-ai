@@ -516,6 +516,9 @@ function initWhatsApp() {
   
   wppconnect.create({
     session: 'whatsapp-reply-agent',
+    puppeteerOptions: {
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
+    },
     catchQR: (base64Qr, asciiQR, attempts) => {
       whatsappStatus = 'QR_CODE';
       qrCodeData = base64Qr;
