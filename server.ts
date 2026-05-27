@@ -602,4 +602,6 @@ if (fs.existsSync(distPath)) {
 
 app.listen(PORT, () => {
   console.log(`[SERVER] Express WhatsApp Bot backend listening on http://localhost:${PORT}`);
+  // Auto-connect WhatsApp session on startup for 100% autonomous crash recovery!
+  initWhatsApp();
 });
