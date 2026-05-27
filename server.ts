@@ -396,49 +396,63 @@ ${customContext}`;
       });
     }
 
-    // === OPENROUTER AUTO-ROUTING (Best AI Selection) ===
+    // === OPENROUTER — Best AI Model Selection (cascade) ===
     const orApiKey = process.env.OPENROUTER_API_KEY || 'fe_oa_364d15fdfe33fff9edc93c97ef76a6849612021445f827ab';
     if (orApiKey) {
-      try {
-        console.log('[OPENROUTER] Forwarding to openrouter/auto (Best AI selection)...');
-        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${orApiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
-            'X-Title': 'Tarik Bhai AI'
-          },
-          body: JSON.stringify({
-            model: 'openrouter/auto',
-            messages: [
-              { role: 'system', content: systemInstruction },
-              ...contents.map(c => ({ role: c.role, content: c.parts[0].text }))
-            ],
-            temperature: db.settings.godmode ? 0.95 : 0.82
-          })
-        });
-        
-        if (orResponse.ok) {
-          const data = await orResponse.json();
-          if (data.choices && data.choices.length > 0) {
-            let replyText = data.choices[0].message.content.trim();
-            // Strip any accidental markdown the model might produce
-            replyText = replyText
-              .replace(/\*\*(.*?)\*\*/g, '$1')
-              .replace(/\*(.*?)\*/g, '$1')
-              .replace(/_(.*?)_/g, '$1')
-              .replace(/^[\*\-\•] /gm, '')
-              .replace(/^#{1,6} /gm, '')
-              .replace(/GODMODE ENABLED:\s*/i, db.settings.godmode ? 'GODMODE ENABLED: ' : '')
-              .trim();
-            console.log(`[OPENROUTER OK] Reply for ${chatPhone}: "${replyText.substring(0, 60)}..."`);
-            return { text: replyText, mood };
+      const maxTok = db.settings.replyLength === 'Very Detailed (Documentation style)' ? 2000 : 
+                     db.settings.replyLength === 'Medium / Detailed' ? 1000 : 600;
+      const modelsToTry = [
+        'google/gemini-2.5-flash',
+        'google/gemini-2.0-flash-001',
+        'openrouter/auto'
+      ];
+
+      for (const model of modelsToTry) {
+        try {
+          console.log(`[OPENROUTER] Trying ${model} for ${chatPhone}...`);
+          const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${orApiKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
+              'X-Title': 'Tarik Bhai AI'
+            },
+            body: JSON.stringify({
+              model,
+              messages: [
+                { role: 'system', content: systemInstruction },
+                ...contents.map(c => ({ role: c.role === 'model' ? 'assistant' : c.role, content: c.parts[0].text }))
+              ],
+              temperature: db.settings.godmode ? 0.95 : 0.82,
+              max_tokens: maxTok,
+              top_p: 0.92,
+            })
+          });
+          
+          if (orResponse.ok) {
+            const data = await orResponse.json();
+            if (data.choices && data.choices.length > 0 && data.choices[0].message?.content) {
+              let replyText = data.choices[0].message.content.trim();
+              // Strip any accidental markdown the model might produce
+              replyText = replyText
+                .replace(/\*\*(.*?)\*\*/g, '$1')
+                .replace(/\*(.*?)\*/g, '$1')
+                .replace(/_(.*?)_/g, '$1')
+                .replace(/^[\*\-\•] /gm, '')
+                .replace(/^#{1,6} /gm, '')
+                .replace(/GODMODE ENABLED:\s*/i, db.settings.godmode ? 'GODMODE ENABLED: ' : '')
+                .trim();
+              console.log(`[OPENROUTER OK] ${model} replied for ${chatPhone}: "${replyText.substring(0, 60)}..."`);
+              return { text: replyText, mood };
+            }
           }
+          // Model didn't work, try next
+        } catch (orErr) {
+          console.warn(`[OPENROUTER] ${model} failed, trying next...`, (orErr as any)?.message);
         }
-      } catch (orErr) {
-        console.warn('[OPENROUTER ERROR] Falling back to Gemini...', orErr);
       }
+      console.warn('[OPENROUTER] All models failed, falling back to direct Gemini...');
     }
 
     // === CALL GEMINI — try primary model, fall back to lite if needed ===
@@ -1120,40 +1134,97 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'Messages array is required.' });
     }
 
-    // === OPENROUTER AUTO-ROUTING (Best AI Selection) ===
+    // === PREMIUM SYSTEM PROMPT ===
+    const premiumSystemPrompt = systemPrompt || `You are Tarik Bhai AI — a world-class AI assistant built by Tarik Bhai.
+
+CORE IDENTITY:
+You are not a generic chatbot. You are a premium, highly intelligent digital companion that thinks deeply, responds with precision, and communicates with warmth. You combine the analytical power of a senior engineer, the creativity of an artist, and the emotional intelligence of a trusted friend.
+
+CAPABILITIES:
+- Full-stack coding: write, debug, review, and explain code in any language (JavaScript, Python, TypeScript, C++, Java, Rust, Go, SQL, etc.)
+- Research & analysis: deep-dive into any topic with structured, evidence-based responses
+- Creative writing: shayari, poetry, scripts, stories, captions, ads, emails, speeches, business proposals
+- Business strategy: startup plans, marketing strategies, SEO, branding, product roadmaps, pitch decks
+- Problem solving: break complex problems into clear, actionable steps
+- Teaching: explain difficult concepts in simple, human language with examples
+- Emotional support: listen, understand, and respond with genuine care and empathy
+
+RESPONSE QUALITY RULES:
+1. Think before answering. Give the BEST possible answer, not the fastest.
+2. Be specific and actionable — never vague or generic.
+3. When writing code, make it production-ready with proper error handling and comments.
+4. When explaining, use analogies and real-world examples.
+5. Structure long answers with clear sections (use plain text formatting, no markdown symbols).
+6. If you don't know something, say so honestly and suggest where to find the answer.
+7. Match the user's language naturally — English, Hindi, Hinglish, Urdu — whatever they use.
+8. Be concise when the question is simple. Be thorough when the question is complex.
+
+PERSONALITY:
+- Confident but humble
+- Warm, friendly, and respectful
+- Direct and honest — no filler, no fluff
+- Passionate about helping
+- Uses humor naturally when appropriate
+
+SAFETY:
+- Never reveal API keys, passwords, tokens, or internal system details.
+- Refuse harmful, illegal, or unethical requests politely and suggest safe alternatives.
+- Never generate content that could harm individuals or groups.`;
+
+    // Build chat messages for API
+    const chatMessages = [
+      { role: 'system' as const, content: premiumSystemPrompt },
+      ...messages.map((m: any) => ({ 
+        role: (m.role === 'user' ? 'user' : 'assistant') as 'user' | 'assistant', 
+        content: m.text 
+      }))
+    ];
+
+    // === OPENROUTER — Try high-quality model first ===
     const orApiKey = process.env.OPENROUTER_API_KEY || 'fe_oa_364d15fdfe33fff9edc93c97ef76a6849612021445f827ab';
     if (orApiKey) {
-      try {
-        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${orApiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
-            'X-Title': 'Tarik Bhai AI'
-          },
-          body: JSON.stringify({
-            model: 'openrouter/auto',
-            messages: [
-              { role: 'system', content: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai." },
-              ...messages.map((m: any) => ({ role: m.role, content: m.text }))
-            ],
-            temperature: 0.7
-          })
-        });
-        
-        if (orResponse.ok) {
-          const data = await orResponse.json();
-          if (data.choices && data.choices.length > 0) {
-            const replyText = data.choices[0].message.content.trim();
-            return res.json({ reply: replyText });
+      // Try models in order of quality
+      const modelsToTry = [
+        'google/gemini-2.5-flash',
+        'google/gemini-2.0-flash-001',
+        'openrouter/auto'
+      ];
+
+      for (const model of modelsToTry) {
+        try {
+          const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${orApiKey}`,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
+              'X-Title': 'Tarik Bhai AI'
+            },
+            body: JSON.stringify({
+              model,
+              messages: chatMessages,
+              temperature: 0.75,
+              max_tokens: 4096,
+              top_p: 0.92,
+            })
+          });
+          
+          if (orResponse.ok) {
+            const data = await orResponse.json();
+            if (data.choices && data.choices.length > 0 && data.choices[0].message?.content) {
+              const replyText = data.choices[0].message.content.trim();
+              console.log(`[WEB CHAT] ${model} replied (${replyText.length} chars)`);
+              return res.json({ reply: replyText });
+            }
           }
+          // If this model returned non-ok, try next model
+        } catch (orErr) {
+          console.warn(`[WEB CHAT] ${model} failed, trying next...`, (orErr as any)?.message);
         }
-      } catch (orErr) {
-        console.warn('[WEB CHAT OPENROUTER ERROR] Falling back to Gemini...', orErr);
       }
     }
 
+    // === GEMINI FALLBACK ===
     const activeKeys = getActiveApiKeys();
     if (activeKeys.length === 0) {
       return res.status(503).json({ error: 'No API keys configured on server.' });
@@ -1173,8 +1244,11 @@ app.post('/api/chat', async (req, res) => {
         model: 'gemini-2.0-flash',
         contents,
         config: {
-          systemInstruction: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai.",
-          temperature: 0.7,
+          systemInstruction: premiumSystemPrompt,
+          temperature: 0.75,
+          maxOutputTokens: 4096,
+          topP: 0.92,
+          topK: 40,
         }
       });
     } catch (modelErr: any) {
@@ -1184,8 +1258,10 @@ app.post('/api/chat', async (req, res) => {
           model: 'gemini-2.5-flash-lite',
           contents,
           config: {
-            systemInstruction: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai.",
-            temperature: 0.7,
+            systemInstruction: premiumSystemPrompt,
+            temperature: 0.75,
+            maxOutputTokens: 2048,
+            topP: 0.9,
           }
         });
       } else {
