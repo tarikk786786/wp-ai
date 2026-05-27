@@ -37,7 +37,7 @@ export default function Rules() {
     setWsStatus('CONNECTING');
     setConnectionError(null);
     try {
-      await fetch('/api/start', { method: 'POST' });
+      await fetch('/api/connect', { method: 'POST' });
     } catch (err: any) {
       setConnectionError("Failed to start WhatsApp bot");
       setWsStatus('DISCONNECTED');

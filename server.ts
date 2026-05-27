@@ -527,6 +527,16 @@ function initWhatsApp() {
   
   const isLinux = process.platform === 'linux';
   
+  try {
+    const lockFile = path.join(process.cwd(), 'tokens', 'whatsapp-reply-agent', 'SingletonLock');
+    if (fs.existsSync(lockFile)) {
+      fs.unlinkSync(lockFile);
+      console.log('[CLEANUP] Removed left-over SingletonLock file');
+    }
+  } catch (e) {
+    console.warn('[CLEANUP] Could not remove SingletonLock file', e);
+  }
+  
   wppconnect.create({
     session: 'whatsapp-reply-agent',
     puppeteerOptions: {
