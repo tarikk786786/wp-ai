@@ -414,7 +414,7 @@ ${customContext}`;
         }
       });
     } catch (modelErr: any) {
-      if (modelErr?.status === 429 || modelErr?.message?.includes('quota')) {
+      if (modelErr?.status === 429 || modelErr?.status === 'RESOURCE_EXHAUSTED' || JSON.stringify(modelErr).includes('429') || modelErr?.message?.toLowerCase().includes('quota')) {
         // Primary quota exceeded — try lite model
         console.warn('[MODEL SWITCH] gemini-2.0-flash quota hit, trying gemini-2.5-flash-lite...');
         response = await ai.models.generateContent({
@@ -1084,19 +1084,36 @@ app.post('/api/chat', async (req, res) => {
       parts: [{ text: m.text }]
     }));
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents,
-      config: {
-        systemInstruction: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai.",
-        temperature: 0.7,
+    let response: any;
+    try {
+      response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents,
+        config: {
+          systemInstruction: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai.",
+          temperature: 0.7,
+        }
+      });
+    } catch (modelErr: any) {
+      if (modelErr?.status === 429 || modelErr?.status === 'RESOURCE_EXHAUSTED' || JSON.stringify(modelErr).includes('429') || modelErr?.message?.toLowerCase().includes('quota')) {
+        console.warn('[WEB CHAT] 2.0-flash quota hit, trying 2.5-flash-lite...');
+        response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash-lite',
+          contents,
+          config: {
+            systemInstruction: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai.",
+            temperature: 0.7,
+          }
+        });
+      } else {
+        throw modelErr;
       }
-    });
+    }
 
     const replyText = response.text?.trim() || "I'm here. How can I help?";
     res.json({ reply: replyText });
   } catch (err: any) {
-    console.error('[WEB CHAT API ERROR]', err.message);
+    console.error('[WEB CHAT API ERROR]', err?.message || JSON.stringify(err));
     res.status(500).json({ error: 'Failed to generate response. Please try again.' });
   }
 });
