@@ -6,7 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
-db.json
 *.json.bak
 tokens/
 

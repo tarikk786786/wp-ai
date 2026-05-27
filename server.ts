@@ -22,12 +22,25 @@ app.use(cors());
 app.use(express.json());
 
 // Database file path
-const DB_PATH = path.resolve(__dirname, 'db.json');
+// Use persistent disk path so data isn't wiped on Render container sleep
+const tokensDir = path.resolve(__dirname, 'tokens');
+if (!fs.existsSync(tokensDir)) {
+  fs.mkdirSync(tokensDir, { recursive: true });
+}
+
+const DB_PATH = path.resolve(tokensDir, 'db.json');
+const BUNDLED_DB_PATH = path.resolve(__dirname, 'db.json');
+
+// Seed the persistent disk with the bundled database (if it exists)
+if (!fs.existsSync(DB_PATH) && fs.existsSync(BUNDLED_DB_PATH)) {
+  console.log("[DB] Seeding persistent database with local history...");
+  fs.copyFileSync(BUNDLED_DB_PATH, DB_PATH);
+}
 
 // Session states
 let db: any = {};
 let whatsappClient: wppconnect.Whatsapp | null = null;
-let whatsappStatus: 'DISCONNECTED' | 'QR_CODE' | 'CONNECTING' | 'CONNECTED' = 'DISCONNECTED';
+let whatsappStatus = 'DISCONNECTED' as 'DISCONNECTED' | 'QR_CODE' | 'CONNECTING' | 'CONNECTED';
 let qrCodeData: string | null = null;
 let connectionError: string | null = null;
 
@@ -526,7 +539,7 @@ function initWhatsApp() {
     },
     statusFind: (statusSession, session) => {
       console.log(`[SESSION STATUS] ${statusSession} for session ${session}`);
-      if (statusSession === 'autocloseCalled' || statusSession === 'desconnectedMobile') {
+      if (statusSession === 'autocloseCalled' || statusSession === 'disconnectedMobile' || (statusSession as string) === 'desconnectedMobile') {
         whatsappStatus = 'DISCONNECTED';
         db.stats.whatsappApiStatus = 'offline';
         whatsappClient = null;
@@ -542,7 +555,7 @@ function initWhatsApp() {
         }, 10000);
       }
     },
-    headless: 'new',
+    headless: true,
     devtools: false,
     useChrome: !isLinux,
     debug: false,
@@ -573,7 +586,7 @@ function initWhatsApp() {
     client.onMessage(async (message) => {
       try {
         // 1. SKIP: groups, broadcasts, self-sent messages
-        if (message.isGroup || message.isGroupMsg || message.from === 'status@broadcast' || message.fromMe) {
+        if ((message as any).isGroup || message.isGroupMsg || message.from === 'status@broadcast' || message.fromMe) {
           return;
         }
 
@@ -1027,6 +1040,45 @@ app.delete('/api/chats/:phone', (req, res) => {
   }
 });
 
+// 14b. Frontend Web AI Chat API (Secure, no keys exposed)
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { messages, systemPrompt } = req.body;
+    
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'Messages array is required.' });
+    }
+
+    const activeKeys = getActiveApiKeys();
+    if (activeKeys.length === 0) {
+      return res.status(503).json({ error: 'No API keys configured on server.' });
+    }
+
+    const ai = new GoogleGenAI({ apiKey: activeKeys[0] });
+    
+    // Map messages to Gemini format
+    const contents = messages.map((m: any) => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.text }]
+    }));
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents,
+      config: {
+        systemInstruction: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai.",
+        temperature: 0.7,
+      }
+    });
+
+    const replyText = response.text?.trim() || "I'm here. How can I help?";
+    res.json({ reply: replyText });
+  } catch (err: any) {
+    console.error('[WEB CHAT API ERROR]', err.message);
+    res.status(500).json({ error: 'Failed to generate response. Please try again.' });
+  }
+});
+
 // 15. Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
@@ -1051,7 +1103,7 @@ if (fs.existsSync(distPath)) {
 // =============================================================
 // START SERVER
 // =============================================================
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`\n🚀 Tarik AI WhatsApp Bot — Server running on http://localhost:${PORT}`);
   console.log(`📡 Primary: gemini-2.0-flash | Fallback: gemini-2.5-flash-lite | Emergency: Local Brain`);
   console.log(`🧠 Smart local brain: ACTIVE (instant fallback)`);

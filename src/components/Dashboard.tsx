@@ -1,162 +1,58 @@
-import { useState, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { MessageSquare, Flame, AlertCircle, Bot, Activity, CheckCircle, RefreshCw } from 'lucide-react';
-import { DashboardStats } from '../types';
+import { Code, Layout, Search, MessageSquare, BookOpen, Calculator, Briefcase, Megaphone, PenTool, Bug, Layers, GraduationCap } from 'lucide-react';
+import { motion } from 'motion/react';
 
-// Helper to determine active backend API base dynamically (supports Netlify production host mappings)
-const getApiUrl = (path: string) => path;
-
-const chartData = [
-  { name: 'Mon', replies: 400 },
-  { name: 'Tue', replies: 600 },
-  { name: 'Wed', replies: 850 },
-  { name: 'Thu', replies: 930 },
-  { name: 'Fri', replies: 1200 },
-  { name: 'Sat', replies: 1100 },
-  { name: 'Sun', replies: 800 },
+const AI_TASKS = [
+  { icon: <Code />, title: 'Coding Helper', desc: 'Write, debug, and optimize code in any language', color: 'from-blue-400 to-blue-600' },
+  { icon: <Layout />, title: 'Website Builder', desc: 'Generate UI/UX components and landing pages', color: 'from-emerald-400 to-emerald-600' },
+  { icon: <Search />, title: 'SEO Assistant', desc: 'Optimize content for search engine rankings', color: 'from-violet-400 to-violet-600' },
+  { icon: <MessageSquare />, title: 'WhatsApp Reply Writer', desc: 'Draft perfect replies for business or friends', color: 'from-green-400 to-green-600' },
+  { icon: <BookOpen />, title: 'Research Assistant', desc: 'Deep dive into any topic with factual analysis', color: 'from-cyan-400 to-cyan-600' },
+  { icon: <Calculator />, title: 'Math & Physics Solver', desc: 'Step-by-step solutions for complex problems', color: 'from-rose-400 to-rose-600' },
+  { icon: <Briefcase />, title: 'Business Planner', desc: 'Create strategies, pitches, and financial models', color: 'from-amber-400 to-amber-600' },
+  { icon: <Megaphone />, title: 'Ad Copy Generator', desc: 'Write high-converting ads for social media', color: 'from-orange-400 to-orange-600' },
+  { icon: <PenTool />, title: 'Content Writer', desc: 'Blogs, articles, essays, and creative writing', color: 'from-fuchsia-400 to-fuchsia-600' },
+  { icon: <Bug />, title: 'Bug Fixer', desc: 'Paste errors and get instant fixes', color: 'from-red-400 to-red-600' },
+  { icon: <Layers />, title: 'UI/UX Improver', desc: 'Get design critiques and improvement ideas', color: 'from-indigo-400 to-indigo-600' },
+  { icon: <GraduationCap />, title: 'Study Assistant', desc: 'Learn topics faster with simple explanations', color: 'from-teal-400 to-teal-600' },
 ];
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalChats: 0,
-    autoRepliesSent: 0,
-    pendingApprovals: 0,
-    hotLeads: 0,
-    angryCustomers: 0,
-    missedChats: 0,
-    aiConfidenceScore: 95.0,
-    whatsappApiStatus: 'offline'
-  });
-  const [loading, setLoading] = useState(true);
-
-  // Fetch stats from backend
-  useEffect(() => {
-    const fetchStats = () => {
-      fetch(getApiUrl('/api/stats'))
-        .then(res => res.json())
-        .then(data => {
-          setStats(data);
-          setLoading(false);
-        })
-        .catch(err => console.error("Error fetching stats:", err));
-    };
-
-    fetchStats();
-    const interval = setInterval(fetchStats, 3000); // Poll every 3 seconds
-    return () => clearInterval(interval);
-  }, []);
-
-  const getStatusColor = (status: 'online' | 'offline' | 'degraded') => {
-    switch (status) {
-      case 'online': return 'bg-emerald-500';
-      case 'degraded': return 'bg-amber-500 animate-pulse';
-      case 'offline': return 'bg-rose-500';
-      default: return 'bg-slate-400';
-    }
-  };
-
-  const getStatusText = (status: 'online' | 'offline' | 'degraded') => {
-    switch (status) {
-      case 'online': return 'CONNECTED';
-      case 'degraded': return 'CONNECTING';
-      case 'offline': return 'OFFLINE';
-      default: return 'UNKNOWN';
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="h-full flex flex-col items-center justify-center text-slate-500 py-12">
-        <RefreshCw className="animate-spin text-emerald-500 mb-3" size={32} />
-        <span className="font-semibold text-sm">Syncing dashboard statistics brother...</span>
-      </div>
-    );
-  }
-
   return (
-    <div className="h-full flex flex-col space-y-6 overflow-y-auto p-2">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800">Dashboard Overview</h2>
-          <p className="text-slate-500">Monitor your AI assistant's performance</p>
-        </div>
-        <div className="flex items-center gap-2.5 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
-          <div className={`w-2.5 h-2.5 rounded-full ${getStatusColor(stats.whatsappApiStatus)}`}></div>
-          <span className="text-sm font-semibold text-slate-700">
-            WhatsApp Status: {getStatusText(stats.whatsappApiStatus)}
-          </span>
-        </div>
+    <div className="h-full flex flex-col space-y-6 overflow-y-auto p-4 md:p-8">
+      <div className="space-y-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
+          Multi-Task Intelligence
+        </h1>
+        <p className="text-gray-400 text-sm md:text-base max-w-2xl">
+          Tarik Bhai AI is trained across multiple disciplines. Select a module below or jump straight into the chat to get started.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: 'Auto Replies Sent', value: stats.autoRepliesSent, icon: <Bot size={24} className="text-emerald-500" />, color: 'bg-emerald-50' },
-          { label: 'Pending Approvals', value: stats.pendingApprovals, icon: <AlertCircle size={24} className="text-amber-500" />, color: 'bg-amber-50' },
-          { label: 'Hot Leads', value: stats.hotLeads, icon: <Flame size={24} className="text-orange-500" />, color: 'bg-orange-50' },
-          { label: 'Avg Confidence', value: `${stats.aiConfidenceScore}%`, icon: <Activity size={24} className="text-blue-500" />, color: 'bg-blue-50' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-            <div className={`p-4 rounded-xl ${stat.color}`}>
-              {stat.icon}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 pt-4">
+        {AI_TASKS.map((task, i) => (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05 }}
+            key={i}
+            className="glass-panel glass-panel-hover p-6 rounded-2xl cursor-pointer group relative overflow-hidden"
+            onClick={() => {
+              // Pre-fill chat logic could go here, or just route to Inbox
+              const el = document.querySelector('button[aria-label="AI Chat"]');
+              if (el) (el as HTMLElement).click();
+            }}
+          >
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${task.color} opacity-10 blur-3xl rounded-full group-hover:opacity-20 transition-opacity`}></div>
+            <div className={`w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-white group-hover:scale-110 transition-transform bg-gradient-to-br ${task.color} shadow-lg`}>
+              {task.icon}
             </div>
-            <div>
-              <p className="text-sm font-medium text-slate-500">{stat.label}</p>
-              <h4 className="text-2xl font-bold text-slate-800 mt-0.5">{stat.value}</h4>
-            </div>
-          </div>
+            <h3 className="text-lg font-semibold text-white mb-2">{task.title}</h3>
+            <p className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
+              {task.desc}
+            </p>
+          </motion.div>
         ))}
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col h-96">
-          <h3 className="font-semibold text-slate-800 mb-6">Auto-Replies Over Time (7 Days)</h3>
-          <div className="flex-1 w-full relative min-h-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorReplies" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                />
-                <Area type="monotone" dataKey="replies" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorReplies)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-          <h3 className="font-semibold text-slate-800 mb-6">Recent Activity</h3>
-          <div className="space-y-5">
-            {[
-              { text: `Total chats recorded: ${stats.totalChats} in history`, time: 'Live sync active', type: 'info' },
-              { text: `Auto-replied successfully to ${stats.autoRepliesSent} queries`, time: 'Real-time automation', type: 'success' },
-              { text: `Pending approvals: ${stats.pendingApprovals} require takeover`, time: 'Awaiting human review', type: 'alert' },
-              { text: 'Tarik AI brain is active', time: 'Active Roman Urdu model', type: 'info' },
-              { text: `System health is green. Device status matches: ${stats.whatsappApiStatus.toUpperCase()}`, time: 'Telemetry', type: 'success' },
-            ].map((activity, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="mt-0.5">
-                  {activity.type === 'success' && <CheckCircle size={16} className="text-emerald-500" />}
-                  {activity.type === 'alert' && <AlertCircle size={16} className="text-red-500" />}
-                  {activity.type === 'info' && <MessageSquare size={16} className="text-blue-500" />}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700">{activity.text}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{activity.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      
     </div>
   );
 }

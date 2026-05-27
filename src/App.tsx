@@ -21,7 +21,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans antialiased text-slate-800 overflow-hidden">
+    <div className="flex h-screen bg-transparent font-sans antialiased text-gray-100 overflow-hidden">
       <Sidebar 
         currentView={currentView} 
         setCurrentView={setCurrentView} 
@@ -30,21 +30,21 @@ export default function App() {
       />
       
       <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
-        <header className="md:hidden flex items-center p-4 bg-white border-b border-slate-200 z-10 shadow-sm sticky top-0">
+        <header className="md:hidden flex items-center p-4 bg-black/40 backdrop-blur-md border-b border-white/10 z-10 shadow-sm sticky top-0">
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 -ml-2 mr-2 text-slate-500 hover:bg-slate-100 rounded-lg active:bg-slate-200 transition-colors"
+            className="p-2 -ml-2 mr-2 text-gray-400 hover:text-white rounded-lg transition-colors"
           >
             <Menu size={24} />
           </button>
           <div className="flex flex-col">
-          <span className="font-bold text-lg leading-tight text-slate-800">Friend Agent</span>
-          <span className="text-xs font-semibold text-emerald-600">Online & Protected</span>
+            <span className="font-bold text-lg leading-tight text-white">Tarik Bhai AI</span>
+            <span className="text-xs font-semibold text-cyan-400">Quantum Intelligence Online</span>
           </div>
         </header>
 
-        <div className="flex-1 p-0 md:p-6 overflow-hidden bg-slate-50 relative">
-          <div className="h-full bg-slate-50 md:bg-transparent overflow-y-auto md:overflow-hidden relative z-0">
+        <div className="flex-1 p-0 md:p-6 overflow-hidden relative">
+          <div className="h-full overflow-y-auto relative z-0">
              {renderView()}
           </div>
         </div>
