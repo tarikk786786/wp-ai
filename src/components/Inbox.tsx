@@ -4,15 +4,7 @@ import { Send, Sparkles, Smile, RefreshCw, Pen, UserCircle, CheckCircle2, AlertT
 import { motion, AnimatePresence } from 'motion/react';
 
 // Helper to determine active backend API base dynamically (supports Netlify production host mappings)
-const getApiUrl = (path: string) => {
-  const savedUrl = localStorage.getItem('WP_BOT_BACKEND_URL');
-  if (savedUrl) {
-    const base = savedUrl.endsWith('/') ? savedUrl.slice(0, -1) : savedUrl;
-    return `${base}${path}`;
-  }
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  return isLocal ? path : `http://localhost:3001${path}`;
-};
+const getApiUrl = (path: string) => path;
 
 export default function Inbox() {
   const [chats, setChats] = useState<Chat[]>([]);
