@@ -396,6 +396,50 @@ ${customContext}`;
       });
     }
 
+    // === OPENROUTER AUTO-ROUTING (Best AI Selection) ===
+    if (process.env.OPENROUTER_API_KEY) {
+      try {
+        console.log('[OPENROUTER] Forwarding to openrouter/auto (Best AI selection)...');
+        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
+            'X-Title': 'Tarik Bhai AI'
+          },
+          body: JSON.stringify({
+            model: 'openrouter/auto',
+            messages: [
+              { role: 'system', content: systemInstruction },
+              ...contents.map(c => ({ role: c.role, content: c.parts[0].text }))
+            ],
+            temperature: db.settings.godmode ? 0.95 : 0.82
+          })
+        });
+        
+        if (orResponse.ok) {
+          const data = await orResponse.json();
+          if (data.choices && data.choices.length > 0) {
+            let replyText = data.choices[0].message.content.trim();
+            // Strip any accidental markdown the model might produce
+            replyText = replyText
+              .replace(/\*\*(.*?)\*\*/g, '$1')
+              .replace(/\*(.*?)\*/g, '$1')
+              .replace(/_(.*?)_/g, '$1')
+              .replace(/^[\*\-\•] /gm, '')
+              .replace(/^#{1,6} /gm, '')
+              .replace(/GODMODE ENABLED:\s*/i, db.settings.godmode ? 'GODMODE ENABLED: ' : '')
+              .trim();
+            console.log(`[OPENROUTER OK] Reply for ${chatPhone}: "${replyText.substring(0, 60)}..."`);
+            return { text: replyText, mood };
+          }
+        }
+      } catch (orErr) {
+        console.warn('[OPENROUTER ERROR] Falling back to Gemini...', orErr);
+      }
+    }
+
     // === CALL GEMINI — try primary model, fall back to lite if needed ===
     // Primary: gemini-2.0-flash (high quota, fast, capable)
     // Fallback: gemini-2.5-flash-lite (backup if primary quota hits)
@@ -1073,6 +1117,39 @@ app.post('/api/chat', async (req, res) => {
     
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Messages array is required.' });
+    }
+
+    // === OPENROUTER AUTO-ROUTING (Best AI Selection) ===
+    if (process.env.OPENROUTER_API_KEY) {
+      try {
+        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
+            'X-Title': 'Tarik Bhai AI'
+          },
+          body: JSON.stringify({
+            model: 'openrouter/auto',
+            messages: [
+              { role: 'system', content: systemPrompt || "You are an advanced AI assistant built by Tarik Bhai." },
+              ...messages.map((m: any) => ({ role: m.role, content: m.text }))
+            ],
+            temperature: 0.7
+          })
+        });
+        
+        if (orResponse.ok) {
+          const data = await orResponse.json();
+          if (data.choices && data.choices.length > 0) {
+            const replyText = data.choices[0].message.content.trim();
+            return res.json({ reply: replyText });
+          }
+        }
+      } catch (orErr) {
+        console.warn('[WEB CHAT OPENROUTER ERROR] Falling back to Gemini...', orErr);
+      }
     }
 
     const activeKeys = getActiveApiKeys();
