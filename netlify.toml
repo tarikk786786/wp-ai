@@ -1,0 +1,13 @@
+# Netlify configuration file for React Frontend Dashboard
+# Configures Vite build settings and handles single-page application router rewrites.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Redirect rule to handle React Router client-side routing.
+# Redirects all traffic to index.html so that page refreshes don't throw 404 errors.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
