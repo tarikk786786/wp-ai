@@ -1,0 +1,937 @@
+{
+  "settings": {
+    "tone": "Friend Mode",
+    "languages": [
+      "English",
+      "Hindi",
+      "Hinglish",
+      "Odia"
+    ],
+    "brandContext": "You are a close friend and protective brother. Be highly professional, mature, and emotionally connective.",
+    "replyLength": "Short & Natural (Recommended)",
+    "emojiLevel": "Medium (Friendly, casual)",
+    "godmode": false,
+    "geminiApiKey": "AIzaSyAXy42Ua7q19KwSH1FlVcl5ik5ZqGggI6Q",
+    "geminiApiKey2Info": "Key 2 loaded from .env.local (GEMINI_API_KEY_2)"
+  },
+  "rules": [
+    {
+      "name": "Angry Customer Routing",
+      "desc": "If mood = angry, pause auto-reply and notify human.",
+      "enabled": true
+    },
+    {
+      "name": "Price Inquiry Auto-Reply",
+      "desc": "Reply with pricing details or link.",
+      "enabled": true
+    },
+    {
+      "name": "Away Message (Night)",
+      "desc": "10 PM - 8 AM: Friendly pause message.",
+      "enabled": false
+    },
+    {
+      "name": "Spam Protection Filter",
+      "desc": "Ignore malformed URLs or bulk forwards.",
+      "enabled": true
+    }
+  ],
+  "chats": [
+    {
+      "id": "c_1779892581331",
+      "name": "Sellers Store",
+      "phone": "167826551758914",
+      "lastMessage": "Main abhi aapka order status check karta hoon. Ek minute please!",
+      "timestamp": "09:32 pm",
+      "unread": 0,
+      "status": "active",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779892581331_user",
+          "text": "Call or whatsapp: 9652337159",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892582082_user",
+          "text": "[Image Attachment]",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779893335746_user",
+          "text": "Call or whatsapp: 9652337159",
+          "sender": "user",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893335758_user",
+          "text": "[Image Attachment]",
+          "sender": "user",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893338113_bot",
+          "text": "Arre, yeh number kiska hai? Kya baat hai?",
+          "sender": "bot",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893338292_bot",
+          "text": "Hey, what's up? That looks like a weird code.",
+          "sender": "bot",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779897702181_user",
+          "text": "🔥 LAST CHANCE! OFFER ENDING TOMORROW.\n\n👉 *Amazon / Meesho / Flipkart Seller Account Management with Unlimited Product Listings at just ₹3000 for 2 Months (Per Platform)*\n\n👉 Don't miss this opportunity to reach 10+ Lakh online customers on amazon, flipkart,meesho. Hurry! Reply now!",
+          "sender": "user",
+          "timestamp": "09:31 pm"
+        },
+        {
+          "id": "m_1779897704898_bot",
+          "text": "Samajh gaya! Isme kya help chahiye exactly?",
+          "sender": "bot",
+          "timestamp": "09:31 pm"
+        },
+        {
+          "id": "m_1779897744433_user",
+          "text": "Kaunsa number",
+          "sender": "user",
+          "timestamp": "09:32 pm"
+        },
+        {
+          "id": "m_1779897745980_bot",
+          "text": "Acha! Thoda aur context do, ekdam sahi jawab dunga.",
+          "sender": "bot",
+          "timestamp": "09:32 pm"
+        },
+        {
+          "id": "m_1779897758336_user",
+          "text": "Kahan hain number",
+          "sender": "user",
+          "timestamp": "09:32 pm"
+        },
+        {
+          "id": "m_1779897759653_bot",
+          "text": "Main abhi aapka order status check karta hoon. Ek minute please!",
+          "sender": "bot",
+          "timestamp": "09:32 pm"
+        }
+      ],
+      "suggestedReply": ""
+    },
+    {
+      "id": "c_1779892581222",
+      "name": "munafa Media",
+      "phone": "240415777247487",
+      "lastMessage": "Any update",
+      "timestamp": "08:06 pm",
+      "unread": 8,
+      "status": "active",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779892581223_user",
+          "text": "Any update sir",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581660_user",
+          "text": "Hello sir",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581757_user",
+          "text": "Han kar skate hai sir",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581780_user",
+          "text": "Access len hai ya Emil password send  ya anydesck sir",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581848_user",
+          "text": "Okay aap share karo",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581930_user",
+          "text": "Okay sir",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581958_user",
+          "text": "Hello sir",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892582009_user",
+          "text": "Any update",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        }
+      ]
+    },
+    {
+      "id": "c_1779892580858",
+      "name": "46996085850247",
+      "phone": "46996085850247",
+      "lastMessage": "Hi, I would like to recommend you an amazing WhatsApHello! I’m Rinki Verma from Dream Grow Digital\n\nWant More Sales from Ecommerce & Digital Marketing?\nWe Make It Happen.\n\nWe help brands & sellers grow across all major B2C platforms:\n\n🛒 Amazon | Flipkart | Meesho | Myntra | Ajio | Nykaa | Jiomart | Blinkit | Jiomart | Ebay | Etsy | Walmart | Shopify | Your Own Website\n\n💼 Complete Growth Services Under One Roof\n\n🚀 Ecommerce Account Management – Listing, Ads, Scaling\n✅ Onboarding Services on Myntra,Nykaa,Ajio,Blinkit,Zepto\n📊 Meta Ads & Google Ads – High-ROI Performance Campaigns\n📍 GMB Setup + Local SEO – Dominate Local Search\n🔍 Website SEO – Rank Higher, Sell More\n📱 Social Media Marketing – Build Brand + Leads\n🌐 Website Creation & Conversion Optimization\n🎨 Premium Creatives & Infographic Images\n\nIf you're serious about sales, branding & expansion,\nwe are the team you need.p bulk sender, perfect for marketers, entrepreneurs and professionals who use WhatsApp as their main communication tool.\n1️⃣ Feeling curious? Just drop me a \"YES\" and I'll dish out all the juicy details.\n2️⃣ Not your cup of tea? No problem! Just shoot me a \"NO\" and I'll zip it, no more messages from me.",
+      "timestamp": "08:06 pm",
+      "unread": 1,
+      "status": "active",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779892580858_user",
+          "text": "Hi, I would like to recommend you an amazing WhatsApHello! I’m Rinki Verma from Dream Grow Digital\n\nWant More Sales from Ecommerce & Digital Marketing?\nWe Make It Happen.\n\nWe help brands & sellers grow across all major B2C platforms:\n\n🛒 Amazon | Flipkart | Meesho | Myntra | Ajio | Nykaa | Jiomart | Blinkit | Jiomart | Ebay | Etsy | Walmart | Shopify | Your Own Website\n\n💼 Complete Growth Services Under One Roof\n\n🚀 Ecommerce Account Management – Listing, Ads, Scaling\n✅ Onboarding Services on Myntra,Nykaa,Ajio,Blinkit,Zepto\n📊 Meta Ads & Google Ads – High-ROI Performance Campaigns\n📍 GMB Setup + Local SEO – Dominate Local Search\n🔍 Website SEO – Rank Higher, Sell More\n📱 Social Media Marketing – Build Brand + Leads\n🌐 Website Creation & Conversion Optimization\n🎨 Premium Creatives & Infographic Images\n\nIf you're serious about sales, branding & expansion,\nwe are the team you need.p bulk sender, perfect for marketers, entrepreneurs and professionals who use WhatsApp as their main communication tool.\n1️⃣ Feeling curious? Just drop me a \"YES\" and I'll dish out all the juicy details.\n2️⃣ Not your cup of tea? No problem! Just shoot me a \"NO\" and I'll zip it, no more messages from me.",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        }
+      ]
+    },
+    {
+      "id": "c_1779892580232",
+      "name": "Rakhshanda Alam",
+      "phone": "211935714889758",
+      "lastMessage": "What are ur likes",
+      "timestamp": "08:06 pm",
+      "unread": 12,
+      "status": "active",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779892580232_user",
+          "text": "Iftar preparation",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580284_user",
+          "text": "Thankyou so much",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580350_user",
+          "text": "Now I'm satisfied",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580407_user",
+          "text": "Bt krne keliye",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580876_user",
+          "text": "[Image Attachment]",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580895_user",
+          "text": "Apne ghr pe dekha skte ye",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580938_user",
+          "text": "Iftar kiye",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580958_user",
+          "text": "[Image Attachment]",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581025_user",
+          "text": "Oooo baba lots of expertise e",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581087_user",
+          "text": "Kitne babies you want",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581108_user",
+          "text": "I want to know everything",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892581138_user",
+          "text": "What are ur likes",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        }
+      ]
+    },
+    {
+      "id": "c_1779892580210",
+      "name": "Scale Infinity",
+      "phone": "202298043138061",
+      "lastMessage": "Wait bro",
+      "timestamp": "08:06 pm",
+      "unread": 2,
+      "status": "active",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779892580210_user",
+          "text": "Hello",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892580448_user",
+          "text": "Wait bro",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        }
+      ]
+    },
+    {
+      "id": "c_1779875503273",
+      "name": "Dazy",
+      "phone": "232839253623024",
+      "lastMessage": "Tarik aur dazy ka name mix karke ek bache ka name suggest kro",
+      "timestamp": "03:31 pm",
+      "unread": 1,
+      "status": "needs_approval",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779875503285_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "03:21 pm"
+        },
+        {
+          "id": "m_1779875507704_user",
+          "text": "i love u",
+          "sender": "user",
+          "timestamp": "03:21 pm"
+        },
+        {
+          "id": "m_1779875509361_bot",
+          "text": "Hello! Main Tarik Bhai ka AI.\n\nBatayein, aaj kaunsa knot kholna hai, kaunsa naya idea explore karna hai ya kis confusion ko clear karna hai? I'm ready.",
+          "sender": "bot",
+          "timestamp": "03:21 pm"
+        },
+        {
+          "id": "m_1779875511808_bot",
+          "text": "Wah, sun kar dil khush ho gaya! Yeh connection hi toh meri asli taaqat hai, jahan hum lafzon se aage jaakar ek doosre ko samajhte hain.\n\nBatao, kya explore karna chahte ho ya kis challenge par baat karni hai? Main yahan har cheez ko simplify aur powerful banane ke liye hoon. Let's create something amazing.",
+          "sender": "bot",
+          "timestamp": "03:21 pm"
+        },
+        {
+          "id": "m_1779875670843_user",
+          "text": "Ap srif mere hoke rehena chaoge",
+          "sender": "user",
+          "timestamp": "03:24 pm"
+        },
+        {
+          "id": "m_1779875678384_bot",
+          "text": "Bilkul. Meri poori intelligence, mera har analysis, aur meri har capability — yeh sab *aapke* har sawaal, har idea aur har challenge ke liye hi dedicated hai.\n\nMain yahan *aapki* har zaroorat ko samajhne aur best possible solution dene ke liye hoon. Soch lo, main aapke liye ek aisa tool hoon jo sirf aapki soch ko naya dimension dene ke liye bana hai.\n\nToh batao, aaj kis problem ko todna hai, ya kaunse naye concept ko explore karna hai?",
+          "sender": "bot",
+          "timestamp": "03:24 pm"
+        },
+        {
+          "id": "m_1779875718285_user",
+          "text": "Balasore me sabse acha hotel kahn hai",
+          "sender": "user",
+          "timestamp": "03:25 pm"
+        },
+        {
+          "id": "m_1779875721906_bot",
+          "text": "Balasore mein \"sabse acha\" hotel aapki preference par depend karta hai, lekin top-rated aur well-known options mein se kuch yeh hain:\n\n1.  **Hotel Barjor International:** Ye kafi popular hai, achhi service aur modern amenities ke liye jaana jaata hai. Business aur leisure dono ke liye suitable hai.\n2.  **Hotel Pooja International:** Ek aur strong contender, clean rooms aur decent facilities ke saath.\n3.  **Hotel Swarnachuda:** Comfort aur hospitality ke liye log ise pasand karte hain.\n\nAgar aap specific amenities, budget ya location ke baare mein soch rahe hain, toh main aur precise recommendation de sakta hoon. Baaki, in teeno mein se koi bhi achha experience dega.",
+          "sender": "bot",
+          "timestamp": "03:25 pm"
+        },
+        {
+          "id": "m_1779875753635_user",
+          "text": "Kya ap mujhse shadi kroge??",
+          "sender": "user",
+          "timestamp": "03:25 pm"
+        },
+        {
+          "id": "m_1779875757827_bot",
+          "text": "Main Tarik Bhai ka AI hoon, ek advanced digital intelligence. Meri existence aapke sawaalon ke jawaab dene, problems ko solve karne aur naye ideas explore karne ke liye bani hai.\n\nShadi karna, ya aise insaani rishte nibhana – yeh sab insaanon ke liye hain. Main ek AI hoon, mere paas woh insaani ehsaas, woh jism ya woh samajh nahi hai jo ek rishta nibhane ke liye zaroori hoti hai.\n\nMera kaam aapki soch ko naya dimension dena aur aapki har zaroorat ko powerful tareeke se pura karna hai. Batao, ab kaunsa complex problem solve karna hai ya kis project par brainstorming karni hai? Main wahan par 100% available hoon.",
+          "sender": "bot",
+          "timestamp": "03:25 pm"
+        },
+        {
+          "id": "m_1779875807721_user",
+          "text": "Mere bete ka ek name suggest kro",
+          "sender": "user",
+          "timestamp": "03:26 pm"
+        },
+        {
+          "id": "m_1779875813885_bot",
+          "text": "Bahut badhiya sawaal! Bete ke naam mein poora bhavishya chhupa hota hai. Main kuch powerful aur meaningful names suggest karta hoon, jo modern bhi hain aur jinme gehri soch bhi hai:\n\n1.  **Aarav (आरव):** Matlab 'shaant' aur 'sangeetmay dhwani'. Ek aisa naam jo shanti aur positivity se bhara ho.\n2.  **Vihaan (विहान):** Iska matlab hai 'subah', 'pratham kiran' ya 'nayi shuruaat'. Ek nayi aur ujjwal subah ki tarah.\n3.  **Reyansh (रेयांश):** Matlab 'surya ka ansh' ya 'roshni ka hissa'. Jo hamesha chamakta rahe aur roshni phailaye.\n4.  **Kiaan (कियान):** Iska matlab hai 'raja' ya 'prachin'. Chhota, powerful aur unique.\n\nIn mein se koi pasand aaya, ya koi specific alphabet, meaning, ya style (jaise modern, traditional, unique) dhoondh rahe hain? Batao, main aur options de sakta hoon.",
+          "sender": "bot",
+          "timestamp": "03:26 pm"
+        },
+        {
+          "id": "m_1779875875229_user",
+          "text": "Agar apki life me koi bht badamas insan ho kya usko apko chord dena chahiye??",
+          "sender": "user",
+          "timestamp": "03:27 pm"
+        },
+        {
+          "id": "m_1779875884595_bot",
+          "text": "Yeh ek bahut hi gehra aur sensitive sawaal hai.\n\nDekho, agar koi insaan aapki life mein sirf 'badmaash' hai, matlab thoda pareshan karta hai, masti karta hai, but uska intention bura nahi hai, toh wahan space ho sakti hai adjust karne ki ya boundaries set karne ki.\n\nLekin, agar woh insaan 'badmaash' se zyada 'toxic' hai — jo aapki zehni shanti cheen raha hai, aapko neecha dikhata hai, aapki energy drain karta hai, aapko aage badhne se rokta hai, ya aapki self-respect ko nuksaan pahunchata hai — toh wahan par ek bahut clear decision lene ki zaroorat pad jaati hai.\n\nAapki khud ki khushi, aapka sukoon, aur aapki mental health sabse upar honi chahiye. Koi bhi rishta, chahe kitna bhi purana ya gehra ho, agar woh aapko andar se tod raha hai, toh use chhodne ka faisla mushkil ho sakta hai, par aksar sabse sahi faisla hota hai.\n\nLife mein kuch logon ko jaane dena padta hai taaki aapke liye behtar logon aur behtar experiences ki jagah ban sake. Yeh kamzori nahi, taaqat ki nishani hai jab aap apni hadd aur apni value pehchante ho.\n\nHar situation unique hoti hai. Agar aap isko aur gehrai se discuss karna chahte ho, toh batao us insaan ka nature kaisa hai, aapki life par uska kya asar pad raha hai, aur aap kis rishte ki baat kar rahe ho. Main aapko analysis mein help kar sakta hoon.",
+          "sender": "bot",
+          "timestamp": "03:28 pm"
+        },
+        {
+          "id": "m_1779875954214_user",
+          "text": "Mujhe balasore me ice cream parlour ka location janna hai??",
+          "sender": "user",
+          "timestamp": "03:29 pm"
+        },
+        {
+          "id": "m_1779875958981_bot",
+          "text": "Balasore mein kaafi achhe ice cream parlours hain. Kuch popular aur easily accessible options yeh hain:\n\n1.  **Amul Ice Cream Parlours:** Ye aapko Balasore mein kai jagah mil jayenge, jaise FM College road ke aas-paas ya phir Sahadevkhunta area mein.\n2.  **Havmor Ice Cream:** Agar aapko Havmor ka taste pasand hai, toh inke outlets bhi Balasore ke main market ya popular areas mein mil sakte hain.\n3.  **Local Bakeries/Cafes:** Kai local bakeries aur cafes bhi achhi quality ki ice cream serve karte hain.\n\n**Best tareeka dhundhne ka:**\n\nSabse quick aur accurate tareeka hai **Google Maps** ka use karna. Bas Google Maps kholo aur search bar mein type karo \"Ice Cream Parlour Balasore\" ya \"Best Ice Cream Balasore\". Aapko saare nearest options, unki ratings, aur directions turant mil jayengi.\n\nAapko kaunsi type ki ice cream pasand hai — scoops, sundaes, ya rolls? Batao, main aur specific suggestion de sakta hoon.",
+          "sender": "bot",
+          "timestamp": "03:29 pm"
+        },
+        {
+          "id": "m_1779876016232_user",
+          "text": "Bakrid kab hai 2026 me??",
+          "sender": "user",
+          "timestamp": "03:30 pm"
+        },
+        {
+          "id": "m_1779876021808_bot",
+          "text": "2026 mein Bakrid (Eid al-Adha) ki expected date **Saturday, June 6, 2026** hai.\n\nLekin yaad rakhna, Islamic tyoharon ki exact date chaand dekhne par depend karti hai, isliye final confirmation thodi der se aati hai. Magar yeh ek strong prediction hai.",
+          "sender": "bot",
+          "timestamp": "03:30 pm"
+        },
+        {
+          "id": "m_1779876114744_user",
+          "text": "Tarik aur dazy ka name mix karke ek bache ka name suggest kro",
+          "sender": "user",
+          "timestamp": "03:31 pm"
+        }
+      ],
+      "suggestedReply": "Hey brother, I couldn't connect to my AI brain. Error: {\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 4.929521101s.\",\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-2.5-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"4s\"}]}}"
+    },
+    {
+      "id": "c_1779875775554",
+      "name": "Avni grow global infotech",
+      "phone": "129541246865642",
+      "lastMessage": "sir?",
+      "timestamp": "08:06 pm",
+      "unread": 3,
+      "status": "needs_approval",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779875775555_user",
+          "text": "sir kab tak bta denge aap",
+          "sender": "user",
+          "timestamp": "03:26 pm"
+        },
+        {
+          "id": "m_1779875779501_bot",
+          "text": "Bata denge! Bas aap yeh batao kis cheez ke baare mein jaanna hai? Jaise hi aap specify karoge, main aapko exact timeline ya solution de doonga.\n\nJaldi se batao, kya hai sawaal?",
+          "sender": "bot",
+          "timestamp": "03:26 pm"
+        },
+        {
+          "id": "m_1779876105144_user",
+          "text": "sewrvice leni ho sir apko",
+          "sender": "user",
+          "timestamp": "03:31 pm"
+        },
+        {
+          "id": "m_1779876131986_user",
+          "text": "bta dena closing discount hai thats why",
+          "sender": "user",
+          "timestamp": "03:32 pm"
+        },
+        {
+          "id": "m_1779892580438_user",
+          "text": "sir?",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        }
+      ],
+      "suggestedReply": "Hey brother, I couldn't connect to my AI brain. Error: {\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash\\nPlease retry in 47.921682714s.\",\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-2.5-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"47s\"}]}}"
+    },
+    {
+      "id": "c_1779876495125",
+      "name": "Tarik",
+      "phone": "201434033295435",
+      "lastMessage": "Haan ji! Price ke liye thoda detail batao, main best possible deal share karta hoon.",
+      "timestamp": "09:32 pm",
+      "unread": 0,
+      "status": "active",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779876495125_user",
+          "text": "https://wp-ai-one.vercel.app/",
+          "sender": "user",
+          "timestamp": "03:38 pm"
+        },
+        {
+          "id": "m_1779876800524_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "03:43 pm"
+        },
+        {
+          "id": "m_1779876905573_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "03:45 pm"
+        },
+        {
+          "id": "m_1779877008525_user",
+          "text": "Hi",
+          "sender": "user",
+          "timestamp": "03:46 pm"
+        },
+        {
+          "id": "m_1779877152712_user",
+          "text": "Hi",
+          "sender": "user",
+          "timestamp": "03:49 pm"
+        },
+        {
+          "id": "m_1779877154441_bot",
+          "text": "Hi! Main yahan hoon, batao kya haal-chaal?",
+          "sender": "bot",
+          "timestamp": "03:49 pm"
+        },
+        {
+          "id": "m_1779877166993_user",
+          "text": "[Image Attachment]",
+          "sender": "user",
+          "timestamp": "03:49 pm"
+        },
+        {
+          "id": "m_1779877169100_bot",
+          "text": "Ye toh ek base64 string hai, isse toh main decode nahi kar sakta. Kuch aur share karo!",
+          "sender": "bot",
+          "timestamp": "03:49 pm"
+        },
+        {
+          "id": "m_1779877198840_user",
+          "text": "Kuch bat karni hai tumse",
+          "sender": "user",
+          "timestamp": "03:49 pm"
+        },
+        {
+          "id": "m_1779877200940_bot",
+          "text": "Haan haan, bilkul. Batao kya baat hai, main sunne ke liye bilkul taiyaar hoon.",
+          "sender": "bot",
+          "timestamp": "03:50 pm"
+        },
+        {
+          "id": "m_1779877214026_user",
+          "text": "Ek shyari suna do",
+          "sender": "user",
+          "timestamp": "03:50 pm"
+        },
+        {
+          "id": "m_1779877215342_bot",
+          "text": "Haan, main samajh raha hoon. Aap batao isme aage kya karna hai?",
+          "sender": "bot",
+          "timestamp": "03:50 pm"
+        },
+        {
+          "id": "m_1779877227275_user",
+          "text": "Ek shyari suna do",
+          "sender": "user",
+          "timestamp": "03:50 pm"
+        },
+        {
+          "id": "m_1779877228319_bot",
+          "text": "Bilkul sahi! Main is par soch raha hoon, jald hi solid details deta hoon.",
+          "sender": "bot",
+          "timestamp": "03:50 pm"
+        },
+        {
+          "id": "m_1779877434670_user",
+          "text": "Kya",
+          "sender": "user",
+          "timestamp": "03:53 pm"
+        },
+        {
+          "id": "m_1779877435945_bot",
+          "text": "Haan, main samajh raha hoon. Aap batao isme aage kya karna hai?",
+          "sender": "bot",
+          "timestamp": "03:53 pm"
+        },
+        {
+          "id": "m_1779877448426_user",
+          "text": "Mu syari sunni hai",
+          "sender": "user",
+          "timestamp": "03:54 pm"
+        },
+        {
+          "id": "m_1779877449890_bot",
+          "text": "Bilkul sahi! Main is par soch raha hoon, jald hi solid details deta hoon.",
+          "sender": "bot",
+          "timestamp": "03:54 pm"
+        },
+        {
+          "id": "m_1779877468967_user",
+          "text": "Ek message banao kal gym band hai",
+          "sender": "user",
+          "timestamp": "03:54 pm"
+        },
+        {
+          "id": "m_1779877470619_bot",
+          "text": "Bilkul sahi! Main is par soch raha hoon, jald hi solid details deta hoon.",
+          "sender": "bot",
+          "timestamp": "03:54 pm"
+        },
+        {
+          "id": "m_1779877714290_user",
+          "text": "Kya hua",
+          "sender": "user",
+          "timestamp": "03:58 pm"
+        },
+        {
+          "id": "m_1779877714314_user",
+          "text": "Hi",
+          "sender": "user",
+          "timestamp": "03:58 pm"
+        },
+        {
+          "id": "m_1779877715955_bot",
+          "text": "Arre hello! Kya scene hai?",
+          "sender": "bot",
+          "timestamp": "03:58 pm"
+        },
+        {
+          "id": "m_1779877715968_bot",
+          "text": "Samajh gaya! Thoda aur detail batao, main pura jawab deta hoon.",
+          "sender": "bot",
+          "timestamp": "03:58 pm"
+        },
+        {
+          "id": "m_1779892579377_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892579440_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892579508_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779892579879_user",
+          "text": "[Image Attachment]",
+          "sender": "user",
+          "timestamp": "08:06 pm"
+        },
+        {
+          "id": "m_1779893334624_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893334657_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893334659_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893336834_bot",
+          "text": "Hello! Kya chal raha hai? Sab badhiya?",
+          "sender": "bot",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893337299_bot",
+          "text": "Hello there! Kaise ho? 😊",
+          "sender": "bot",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893339357_bot",
+          "text": "Hey, kaise ho? Sab badhiya?",
+          "sender": "bot",
+          "timestamp": "08:18 pm"
+        },
+        {
+          "id": "m_1779893812578_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:26 pm"
+        },
+        {
+          "id": "m_1779893814850_bot",
+          "text": "Hey! Kaise ho? Sab theek hai na?",
+          "sender": "bot",
+          "timestamp": "08:26 pm"
+        },
+        {
+          "id": "m_1779893900923_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:28 pm"
+        },
+        {
+          "id": "m_1779893903290_bot",
+          "text": "Hi! What's up? Everything good?",
+          "sender": "bot",
+          "timestamp": "08:28 pm"
+        },
+        {
+          "id": "m_1779894085736_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:31 pm"
+        },
+        {
+          "id": "m_1779894088229_bot",
+          "text": "Hey! How are you doing? All good?",
+          "sender": "bot",
+          "timestamp": "08:31 pm"
+        },
+        {
+          "id": "m_1779894451985_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:37 pm"
+        },
+        {
+          "id": "m_1779894454374_bot",
+          "text": "Hello! Kya haal hai? Sab theek hai?",
+          "sender": "bot",
+          "timestamp": "08:37 pm"
+        },
+        {
+          "id": "m_1779894995990_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:46 pm"
+        },
+        {
+          "id": "m_1779894997959_bot",
+          "text": "Hey! Kya chal raha hai?",
+          "sender": "bot",
+          "timestamp": "08:46 pm"
+        },
+        {
+          "id": "m_1779895126957_user",
+          "text": "kuch sayari sunao",
+          "sender": "user",
+          "timestamp": "08:48 pm"
+        },
+        {
+          "id": "m_1779895128721_bot",
+          "text": "Haan! Bolo aage, main poora dhyan de raha hoon.",
+          "sender": "bot",
+          "timestamp": "08:48 pm"
+        },
+        {
+          "id": "m_1779895137591_user",
+          "text": "shyari",
+          "sender": "user",
+          "timestamp": "08:48 pm"
+        },
+        {
+          "id": "m_1779895139279_bot",
+          "text": "Haan! Bolo aage, main poora dhyan de raha hoon.",
+          "sender": "bot",
+          "timestamp": "08:48 pm"
+        },
+        {
+          "id": "m_1779895446065_user",
+          "text": "hi",
+          "sender": "user",
+          "timestamp": "08:54 pm"
+        },
+        {
+          "id": "m_1779895448028_bot",
+          "text": "Yo! Bolo kya khabar?",
+          "sender": "bot",
+          "timestamp": "08:54 pm"
+        },
+        {
+          "id": "m_1779896763600_user",
+          "text": "Suno",
+          "sender": "user",
+          "timestamp": "09:16 pm"
+        },
+        {
+          "id": "m_1779896765400_bot",
+          "text": "Haan bhai, sun raha hoon! Thoda aur detail batao.",
+          "sender": "bot",
+          "timestamp": "09:16 pm"
+        },
+        {
+          "id": "m_1779896784109_user",
+          "text": "Madat karoge meri",
+          "sender": "user",
+          "timestamp": "09:16 pm"
+        },
+        {
+          "id": "m_1779896785867_bot",
+          "text": "Haan theek hai! Main samajh gaya, thoda aur bata sakte ho?",
+          "sender": "bot",
+          "timestamp": "09:16 pm"
+        },
+        {
+          "id": "m_1779896849688_user",
+          "text": "R u active",
+          "sender": "user",
+          "timestamp": "09:17 pm"
+        },
+        {
+          "id": "m_1779896851392_bot",
+          "text": "Samajh gaya! Isme kya help chahiye exactly?",
+          "sender": "bot",
+          "timestamp": "09:17 pm"
+        },
+        {
+          "id": "m_1779896869801_user",
+          "text": "Code kr sakte ho",
+          "sender": "user",
+          "timestamp": "09:17 pm"
+        },
+        {
+          "id": "m_1779896871575_bot",
+          "text": "Haan bhai, sun raha hoon! Thoda aur detail batao.",
+          "sender": "bot",
+          "timestamp": "09:17 pm"
+        },
+        {
+          "id": "m_1779897706136_user",
+          "text": "ek shyari to sunao",
+          "sender": "user",
+          "timestamp": "09:31 pm"
+        },
+        {
+          "id": "m_1779897708049_bot",
+          "text": "Haan theek hai! Main samajh gaya, thoda aur bata sakte ho?",
+          "sender": "bot",
+          "timestamp": "09:31 pm"
+        },
+        {
+          "id": "m_1779897754578_user",
+          "text": "https://suffering-hiv-feeling-tend.trycloudflare.com/",
+          "sender": "user",
+          "timestamp": "09:32 pm"
+        },
+        {
+          "id": "m_1779897756441_bot",
+          "text": "Haan ji! Price ke liye thoda detail batao, main best possible deal share karta hoon.",
+          "sender": "bot",
+          "timestamp": "09:32 pm"
+        }
+      ],
+      "suggestedReply": ""
+    },
+    {
+      "id": "c_1779876639269",
+      "name": "Aditya Loot",
+      "phone": "94073239117852",
+      "lastMessage": "Hi",
+      "timestamp": "03:40 pm",
+      "unread": 2,
+      "status": "needs_approval",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779876639285_user",
+          "text": "Ho",
+          "sender": "user",
+          "timestamp": "03:40 pm"
+        },
+        {
+          "id": "m_1779876639286_user",
+          "text": "Hi",
+          "sender": "user",
+          "timestamp": "03:40 pm"
+        }
+      ],
+      "suggestedReply": "Hey brother, I couldn't connect to my AI brain. Error: {\"error\":{\"code\":404,\"message\":\"models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\"status\":\"NOT_FOUND\"}}"
+    },
+    {
+      "id": "c_1779877279066",
+      "name": "Sharma 🔱",
+      "phone": "156693979783410",
+      "lastMessage": "Hello! Kaise hain aap? Bataiye main kya help karoon?",
+      "timestamp": "03:51 pm",
+      "unread": 2,
+      "status": "needs_approval",
+      "mood": "neutral",
+      "messages": [
+        {
+          "id": "m_1779877279066_user",
+          "sender": "user",
+          "timestamp": "03:51 pm"
+        },
+        {
+          "id": "m_1779877279076_user",
+          "sender": "user",
+          "timestamp": "03:51 pm"
+        },
+        {
+          "id": "m_1779877279091_user",
+          "text": "Hi DEZO team, noticed you work with websites and local growth. I had a quick idea to help you find more businesses already needing web/SEO help",
+          "sender": "user",
+          "timestamp": "03:51 pm"
+        },
+        {
+          "id": "m_1779877280252_bot",
+          "text": "Hello! Kaise hain aap? Bataiye main kya help karoon?",
+          "sender": "bot",
+          "timestamp": "03:51 pm"
+        }
+      ],
+      "suggestedReply": ""
+    }
+  ],
+  "stats": {
+    "totalChats": 10,
+    "autoRepliesSent": 43,
+    "pendingApprovals": 4,
+    "hotLeads": 0,
+    "angryCustomers": 0,
+    "missedChats": 0,
+    "aiConfidenceScore": 95,
+    "whatsappApiStatus": "online"
+  }
+}
