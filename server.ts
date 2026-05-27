@@ -397,13 +397,14 @@ ${customContext}`;
     }
 
     // === OPENROUTER AUTO-ROUTING (Best AI Selection) ===
-    if (process.env.OPENROUTER_API_KEY) {
+    const orApiKey = process.env.OPENROUTER_API_KEY || 'fe_oa_364d15fdfe33fff9edc93c97ef76a6849612021445f827ab';
+    if (orApiKey) {
       try {
         console.log('[OPENROUTER] Forwarding to openrouter/auto (Best AI selection)...');
         const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Authorization': `Bearer ${orApiKey}`,
             'Content-Type': 'application/json',
             'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
             'X-Title': 'Tarik Bhai AI'
@@ -1120,12 +1121,13 @@ app.post('/api/chat', async (req, res) => {
     }
 
     // === OPENROUTER AUTO-ROUTING (Best AI Selection) ===
-    if (process.env.OPENROUTER_API_KEY) {
+    const orApiKey = process.env.OPENROUTER_API_KEY || 'fe_oa_364d15fdfe33fff9edc93c97ef76a6849612021445f827ab';
+    if (orApiKey) {
       try {
         const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Authorization': `Bearer ${orApiKey}`,
             'Content-Type': 'application/json',
             'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
             'X-Title': 'Tarik Bhai AI'
