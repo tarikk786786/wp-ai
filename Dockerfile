@@ -57,6 +57,9 @@ RUN npm install
 # Copy entire application source code
 COPY . .
 
+# Build the frontend assets to the dist folder
+RUN npm run build
+
 # Expose backend REST API port
 EXPOSE 3001
 

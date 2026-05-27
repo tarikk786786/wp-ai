@@ -1,0 +1,37 @@
+<service>
+	<id>tarikaibot.exe</id>
+	<name>TarikAIBot</name>
+	<description>Tarik AI WhatsApp Bot running 24/7</description>
+	<executable>C:\Program Files\nodejs\node.exe</executable>
+	<argument>--import</argument>
+	<argument>tsx</argument>
+	<argument>--max-old-space-size=512</argument>
+	<argument>C:\Users\tarik\Downloads\tarik AI\node_modules\node-windows\lib\wrapper.js</argument>
+	<argument>--file</argument>
+	<argument>C:\Users\tarik\Downloads\tarik AI\server.ts</argument>
+	<argument>--scriptoptions=</argument>
+	<argument>--log</argument>
+	<argument>TarikAIBot wrapper</argument>
+	<argument>--grow</argument>
+	<argument>0.5</argument>
+	<argument>--wait</argument>
+	<argument>5</argument>
+	<argument>--maxrestarts</argument>
+	<argument>50</argument>
+	<argument>--abortonerror</argument>
+	<argument>n</argument>
+	<argument>--stopparentfirst</argument>
+	<argument>undefined</argument>
+	<logmode>rotate</logmode>
+	<stoptimeout>30sec</stoptimeout>
+	<env name="FEATHERLESS_API_KEY" value="fe_oa_4fe289b7c40d918258d30e8f4f08ec1936cd244d95d7134e"/>
+	<env name="GEMINI_API_KEY_2" value="AIzaSyAr_FDVqs91DByTV_mrRIql02Sm7c0Ncl8"/>
+	<env name="NODE_ENV" value="production"/>
+	<env name="PORT" value="3001"/>
+	<serviceaccount>
+		<domain>TARIK</domain>
+		<user>LocalSystem</user>
+		<password></password>
+	</serviceaccount>
+	<workingdirectory>C:\Users\tarik\Downloads\tarik AI</workingdirectory>
+</service>
