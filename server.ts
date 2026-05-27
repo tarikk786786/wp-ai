@@ -528,13 +528,17 @@ function initWhatsApp() {
   const isLinux = process.platform === 'linux';
   
   try {
-    const lockFile = path.join(process.cwd(), 'tokens', 'whatsapp-reply-agent', 'SingletonLock');
-    if (fs.existsSync(lockFile)) {
-      fs.unlinkSync(lockFile);
-      console.log('[CLEANUP] Removed left-over SingletonLock file');
-    }
+    const profileDir = path.join(process.cwd(), 'tokens', 'whatsapp-reply-agent');
+    const filesToRemove = ['SingletonLock', 'SingletonCookie', 'SingletonSocket'];
+    filesToRemove.forEach(file => {
+      const filePath = path.join(profileDir, file);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`[CLEANUP] Removed left-over ${file}`);
+      }
+    });
   } catch (e) {
-    console.warn('[CLEANUP] Could not remove SingletonLock file', e);
+    console.warn('[CLEANUP] Could not remove lock files', e);
   }
   
   wppconnect.create({
