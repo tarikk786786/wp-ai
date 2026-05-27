@@ -3,11 +3,21 @@ import { Chat } from '../types';
 import { Send, Sparkles, Smile, RefreshCw, Pen, UserCircle, CheckCircle2, AlertTriangle, ArrowLeft, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+// Helper to determine active backend API base dynamically (supports Netlify production host mappings)
+const getApiUrl = (path: string) => {
+  const savedUrl = localStorage.getItem('WP_BOT_BACKEND_URL');
+  if (savedUrl) {
+    const base = savedUrl.endsWith('/') ? savedUrl.slice(0, -1) : savedUrl;
+    return `${base}${path}`;
+  }
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  return isLocal ? path : `http://localhost:3001${path}`;
+};
+
 export default function Inbox() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [activeChatPhone, setActiveChatPhone] = useState<string | null>(null);
   const [inputText, setInputText] = useState('');
-  const [overrideSuggest, setOverrideSuggest] = useState('');
   const [editingSuggestion, setEditingSuggestion] = useState(false);
   const [customSuggestText, setCustomSuggestText] = useState('');
   
@@ -20,7 +30,7 @@ export default function Inbox() {
   // Poll chats from server every 2.5 seconds
   useEffect(() => {
     const fetchChats = () => {
-      fetch('/api/chats')
+      fetch(getApiUrl('/api/chats'))
         .then(res => res.json())
         .then(data => {
           setChats(data);
@@ -74,15 +84,13 @@ export default function Inbox() {
   const handleApproveSend = async () => {
     if (!activeChat) return;
     try {
-      // Send the approved text (either customized or default)
-      const res = await fetch('/api/reply', {
+      const res = await fetch(getApiUrl('/api/reply'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: activeChat.phone, text: customSuggestText })
       });
       if (res.ok) {
-        // Refresh local data immediately
-        const updateRes = await fetch('/api/chats');
+        const updateRes = await fetch(getApiUrl('/api/chats'));
         const data = await updateRes.json();
         setChats(data);
       }
@@ -100,13 +108,13 @@ export default function Inbox() {
     setInputText('');
 
     try {
-      const res = await fetch('/api/reply', {
+      const res = await fetch(getApiUrl('/api/reply'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: activeChat.phone, text: currentText })
       });
       if (res.ok) {
-        const updateRes = await fetch('/api/chats');
+        const updateRes = await fetch(getApiUrl('/api/chats'));
         const data = await updateRes.json();
         setChats(data);
       }
@@ -119,13 +127,13 @@ export default function Inbox() {
   const handleMarkResolved = async () => {
     if (!activeChat) return;
     try {
-      const res = await fetch('/api/resolve', {
+      const res = await fetch(getApiUrl('/api/resolve'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: activeChat.phone })
       });
       if (res.ok) {
-        const updateRes = await fetch('/api/chats');
+        const updateRes = await fetch(getApiUrl('/api/chats'));
         const data = await updateRes.json();
         setChats(data);
       }
@@ -139,7 +147,7 @@ export default function Inbox() {
     if (!activeChat) return;
     setRegenerating(true);
     try {
-      const res = await fetch('/api/suggest/regenerate', {
+      const res = await fetch(getApiUrl('/api/suggest/regenerate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -150,8 +158,7 @@ export default function Inbox() {
       const data = await res.json();
       if (res.ok) {
         setCustomSuggestText(data.suggestedReply);
-        // Refresh chats state in background
-        const updateRes = await fetch('/api/chats');
+        const updateRes = await fetch(getApiUrl('/api/chats'));
         const updatedData = await updateRes.json();
         setChats(updatedData);
       } else {
@@ -225,7 +232,7 @@ export default function Inbox() {
           ))}
           {chats.length === 0 && (
             <div className="p-8 text-center text-slate-400 text-sm">
-              No active conversations yet brother. Scan QR in Settings to start!
+              No active conversations yet brother. Link WhatsApp in Settings to start!
             </div>
           )}
         </div>
@@ -284,7 +291,7 @@ export default function Inbox() {
                   {msg.sender !== 'user' && (
                     <span className="text-[10px] text-slate-400 mt-1 mr-1.5 flex items-center gap-1 font-semibold">
                       <Sparkles size={10} className="text-emerald-500" /> 
-                      {msg.sender === 'bot' ? 'Auto-reply (Friend Mode)' : 'Human Override'}
+                      {msg.sender === 'bot' ? 'Auto-reply (Tarik AI)' : 'Human Override'}
                     </span>
                   )}
                 </div>
@@ -299,7 +306,7 @@ export default function Inbox() {
                   <div className="flex items-center justify-between mb-2.5">
                     <div className="flex items-center gap-1.5">
                       <Sparkles size={16} className="text-emerald-600 animate-pulse" />
-                      <span className="text-sm font-bold text-emerald-800">Suggested Friend-Brother Reply</span>
+                      <span className="text-sm font-bold text-emerald-800">Suggested Hinglish Reply</span>
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Memory Active</span>
                   </div>
@@ -326,11 +333,11 @@ export default function Inbox() {
                       <RefreshCw className={regenerating ? "animate-spin" : ""} size={12} /> Regenerate
                     </button>
                     <button 
-                      onClick={() => handleRegenerate("Make it much warmer, loving and supportive brotherly tone")}
+                      onClick={() => handleRegenerate("Make it much warmer, emotionally connective style")}
                       disabled={regenerating}
                       className="text-xs bg-white text-slate-600 px-3 py-1.5 rounded-full border border-slate-200 hover:bg-slate-50 flex items-center gap-1 font-semibold transition-colors disabled:opacity-50"
                     >
-                      <Smile size={12} className="text-emerald-500" /> More Brotherly
+                      <Smile size={12} className="text-emerald-500" /> More Emotional
                     </button>
                     <button 
                       onClick={() => handleRegenerate("Keep it very short, direct and casual")}
@@ -385,7 +392,7 @@ export default function Inbox() {
                   type="text" 
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Write a message to your friend..." 
+                  placeholder="Write a message..." 
                   className="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-medium"
                 />
                 <button 
@@ -402,7 +409,7 @@ export default function Inbox() {
           <div className="flex-1 flex flex-col items-center justify-center text-slate-400 p-8 text-center bg-[#F0F2F5]">
             <Bot size={48} className="mb-4 text-slate-300 animate-bounce" />
             <h3 className="text-lg font-medium text-slate-500 mb-2">WhatsApp Auto-Reply Active</h3>
-            <p className="text-sm max-w-sm">No active conversations found brother. Scan the secure QR in Settings to attach your WhatsApp account and start listening to messages!</p>
+            <p className="text-sm max-w-sm">No active conversations found brother. Link WhatsApp in Settings to attach your WhatsApp account and start listening to messages!</p>
           </div>
         )}
       </div>

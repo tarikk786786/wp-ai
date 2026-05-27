@@ -3,6 +3,17 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { MessageSquare, Flame, AlertCircle, Bot, Activity, CheckCircle, RefreshCw } from 'lucide-react';
 import { DashboardStats } from '../types';
 
+// Helper to determine active backend API base dynamically (supports Netlify production host mappings)
+const getApiUrl = (path: string) => {
+  const savedUrl = localStorage.getItem('WP_BOT_BACKEND_URL');
+  if (savedUrl) {
+    const base = savedUrl.endsWith('/') ? savedUrl.slice(0, -1) : savedUrl;
+    return `${base}${path}`;
+  }
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  return isLocal ? path : `http://localhost:3001${path}`;
+};
+
 const chartData = [
   { name: 'Mon', replies: 400 },
   { name: 'Tue', replies: 600 },
@@ -29,7 +40,7 @@ export default function Dashboard() {
   // Fetch stats from backend
   useEffect(() => {
     const fetchStats = () => {
-      fetch('/api/stats')
+      fetch(getApiUrl('/api/stats'))
         .then(res => res.json())
         .then(data => {
           setStats(data);
@@ -135,7 +146,7 @@ export default function Dashboard() {
               { text: `Total chats recorded: ${stats.totalChats} in history`, time: 'Live sync active', type: 'info' },
               { text: `Auto-replied successfully to ${stats.autoRepliesSent} queries`, time: 'Real-time automation', type: 'success' },
               { text: `Pending approvals: ${stats.pendingApprovals} require takeover`, time: 'Awaiting human review', type: 'alert' },
-              { text: 'Friend-Brother brain is analyzing emotional intent', time: 'Active intent model', type: 'info' },
+              { text: 'Tarik AI brain is active', time: 'Active Roman Urdu model', type: 'info' },
               { text: `System health is green. Device status matches: ${stats.whatsappApiStatus.toUpperCase()}`, time: 'Telemetry', type: 'success' },
             ].map((activity, i) => (
               <div key={i} className="flex gap-4">

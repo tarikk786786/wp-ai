@@ -7,6 +7,17 @@ type Rule = {
   enabled: boolean;
 };
 
+// Helper to determine active backend API base dynamically (supports Netlify production host mappings)
+const getApiUrl = (path: string) => {
+  const savedUrl = localStorage.getItem('WP_BOT_BACKEND_URL');
+  if (savedUrl) {
+    const base = savedUrl.endsWith('/') ? savedUrl.slice(0, -1) : savedUrl;
+    return `${base}${path}`;
+  }
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  return isLocal ? path : `http://localhost:3001${path}`;
+};
+
 export default function Rules() {
   const [rules, setRules] = useState<Rule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +37,7 @@ export default function Rules() {
   // Load Rules
   useEffect(() => {
     const fetchRules = () => {
-      fetch('/api/rules')
+      fetch(getApiUrl('/api/rules'))
         .then(res => res.json())
         .then(data => {
           setRules(data);
@@ -44,7 +55,7 @@ export default function Rules() {
     setRules(updatedRules);
 
     try {
-      await fetch('/api/rules', {
+      await fetch(getApiUrl('/api/rules'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedRules)

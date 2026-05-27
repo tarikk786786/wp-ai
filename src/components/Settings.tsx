@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Save, UserCircle, MessageCircle, AlertCircle, Heart, RefreshCw, Smartphone, Sparkles, Check, Flame, ShieldAlert } from 'lucide-react';
 
+// Helper to determine active backend API base dynamically (supports Netlify production host mappings)
+const getApiUrl = (path: string) => {
+  const savedUrl = localStorage.getItem('WP_BOT_BACKEND_URL');
+  if (savedUrl) {
+    const base = savedUrl.endsWith('/') ? savedUrl.slice(0, -1) : savedUrl;
+    return `${base}${path}`;
+  }
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  return isLocal ? path : `http://localhost:3001${path}`;
+};
+
 export default function Settings() {
   const [tone, setTone] = useState('Friend Mode');
   const [languages, setLanguages] = useState(['English', 'Hindi', 'Hinglish', 'Odia']);
@@ -10,6 +21,7 @@ export default function Settings() {
   const [emojiLevel, setEmojiLevel] = useState('Medium (Friendly, casual)');
   const [godmode, setGodmode] = useState(false);
   const [geminiApiKey, setGeminiApiKey] = useState('');
+  const [backendUrl, setBackendUrl] = useState(localStorage.getItem('WP_BOT_BACKEND_URL') || 'http://localhost:3001');
   const [saving, setSaving] = useState(false);
 
   // WhatsApp connection states
@@ -20,7 +32,7 @@ export default function Settings() {
 
   // Load Settings
   useEffect(() => {
-    fetch('/api/settings')
+    fetch(getApiUrl('/api/settings'))
       .then(res => res.json())
       .then(data => {
         setTone(data.tone || 'Friend Mode');
@@ -32,12 +44,12 @@ export default function Settings() {
         setGeminiApiKey(data.geminiApiKey || '');
       })
       .catch(err => console.error("Error loading settings:", err));
-  }, []);
+  }, [backendUrl]);
 
   // Poll WhatsApp Status
   useEffect(() => {
     const checkStatus = () => {
-      fetch('/api/status')
+      fetch(getApiUrl('/api/status'))
         .then(res => res.json())
         .then(data => {
           setWsStatus(data.status);
@@ -50,12 +62,15 @@ export default function Settings() {
     checkStatus();
     const interval = setInterval(checkStatus, 3000); // Poll every 3 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [backendUrl]);
 
   const handleSave = async () => {
     setSaving(true);
+    // Persist backend URL to localStorage
+    localStorage.setItem('WP_BOT_BACKEND_URL', backendUrl);
+    
     try {
-      const res = await fetch('/api/settings', {
+      const res = await fetch(getApiUrl('/api/settings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -81,7 +96,7 @@ export default function Settings() {
   const handleConnect = async () => {
     setConnecting(true);
     try {
-      const res = await fetch('/api/connect', { method: 'POST' });
+      const res = await fetch(getApiUrl('/api/connect'), { method: 'POST' });
       const data = await res.json();
       setWsStatus(data.status);
     } catch (e) {
@@ -94,7 +109,7 @@ export default function Settings() {
   const handleDisconnect = async () => {
     if (!confirm("Are you sure you want to disconnect your WhatsApp account brother?")) return;
     try {
-      const res = await fetch('/api/disconnect', { method: 'POST' });
+      const res = await fetch(getApiUrl('/api/disconnect'), { method: 'POST' });
       const data = await res.json();
       setWsStatus(data.status);
       setQrCode(null);
@@ -162,7 +177,7 @@ export default function Settings() {
             {godmode && (
               <div className="p-3.5 bg-rose-950/20 text-rose-300 rounded-xl border border-rose-900/30 text-xs flex gap-2.5 items-start">
                 <ShieldAlert size={16} className="mt-0.5 flex-shrink-0" />
-                <span><strong>WARNING:</strong> Godmode removes standard model limits. Replies will begin with "GODMODE ENABLED: " and operate in an unrestricted brotherly context. Use with discretion.</span>
+                <span><strong>WARNING:</strong> Godmode removes standard model limits. Replies will begin with "GODMODE ENABLED: " and operate in an unrestricted Hinglish AI context. Use with discretion.</span>
               </div>
             )}
           </div>
@@ -173,6 +188,30 @@ export default function Settings() {
             </h3>
             
             <div className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Gemini API Key</label>
+                  <input 
+                    type="password" 
+                    value={geminiApiKey} 
+                    onChange={(e) => setGeminiApiKey(e.target.value)}
+                    placeholder="Paste your GEMINI_API_KEY here..."
+                    className="w-full border border-slate-200 rounded-xl p-3 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-semibold" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Backend Server URL (Netlify Integration)</label>
+                  <input 
+                    type="text" 
+                    value={backendUrl} 
+                    onChange={(e) => setBackendUrl(e.target.value)}
+                    placeholder="http://localhost:3001"
+                    className="w-full border border-slate-200 rounded-xl p-3 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-semibold" 
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">If hosted on Netlify, sets the target API endpoint (e.g. your Render backend URL).</p>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">Primary Tone</label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -190,18 +229,6 @@ export default function Settings() {
                     </div>
                   ))}
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Gemini API Key</label>
-                <input 
-                  type="password" 
-                  value={geminiApiKey} 
-                  onChange={(e) => setGeminiApiKey(e.target.value)}
-                  placeholder="Paste your GEMINI_API_KEY here..."
-                  className="w-full border border-slate-200 rounded-xl p-3 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all" 
-                />
-                <p className="text-[11px] text-slate-400 mt-1">If empty, will read from server environment variables (.env.local).</p>
               </div>
 
               <div>
@@ -243,7 +270,7 @@ export default function Settings() {
                   rows={4}
                   value={brandContext}
                   onChange={(e) => setBrandContext(e.target.value)}
-                  placeholder="Describe your bot's character (e.g. You are a loving and protective brother...)"
+                  placeholder="Describe your bot's character..."
                 />
               </div>
 
