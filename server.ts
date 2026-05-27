@@ -377,22 +377,22 @@ app.get('/api/chats', (req, res) => {
   res.json(db.chats);
 });
 
-// 5. Send manual reply
+// 5. Send manual reply (creates chat if not exists)
 app.post('/api/reply', async (req, res) => {
   const { phone, text } = req.body;
   if (!phone || !text) {
     return res.status(400).json({ error: 'Phone and text are required.' });
   }
 
-  // Add human message to log
-  const chat = db.chats.find((c: any) => c.phone === phone);
+  const humanMsg = {
+    id: 'm_' + Date.now() + '_human',
+    text: text,
+    sender: 'human',
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  };
+
+  let chat = db.chats.find((c: any) => c.phone === phone);
   if (chat) {
-    const humanMsg = {
-      id: 'm_' + Date.now() + '_human',
-      text: text,
-      sender: 'human',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
     chat.messages.push(humanMsg);
     chat.lastMessage = text;
     chat.timestamp = humanMsg.timestamp;
@@ -401,6 +401,21 @@ app.post('/api/reply', async (req, res) => {
     if (chat.status === 'needs_approval') {
       chat.status = 'active';
     }
+  } else {
+    // Create new chat automatically
+    chat = {
+      id: 'c_' + Date.now(),
+      name: phone,
+      phone: phone,
+      lastMessage: text,
+      timestamp: humanMsg.timestamp,
+      unread: 0,
+      status: 'active',
+      mood: 'neutral',
+      suggestedReply: '',
+      messages: [humanMsg]
+    };
+    db.chats.unshift(chat);
   }
 
   // Send physically via WhatsApp if connected
@@ -420,6 +435,33 @@ app.post('/api/reply', async (req, res) => {
   // Update stats
   db.stats.pendingApprovals = db.chats.filter((c: any) => c.status === 'needs_approval').length;
   saveDb();
+  res.json({ success: true, chat });
+});
+
+// 5b. Create new empty chat endpoint
+app.post('/api/chats/create', (req, res) => {
+  const { phone, name } = req.body;
+  if (!phone) {
+    return res.status(400).json({ error: 'Phone number is required.' });
+  }
+
+  let chat = db.chats.find((c: any) => c.phone === phone);
+  if (!chat) {
+    chat = {
+      id: 'c_' + Date.now(),
+      name: name || phone,
+      phone: phone,
+      lastMessage: 'Conversation initialized',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      unread: 0,
+      status: 'active',
+      mood: 'neutral',
+      suggestedReply: '',
+      messages: []
+    };
+    db.chats.unshift(chat);
+    saveDb();
+  }
   res.json({ success: true, chat });
 });
 

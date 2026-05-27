@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Chat } from '../types';
-import { Send, Sparkles, Smile, RefreshCw, Pen, UserCircle, CheckCircle2, AlertTriangle, ArrowLeft, Bot } from 'lucide-react';
+import { Send, Sparkles, Smile, RefreshCw, Pen, UserCircle, CheckCircle2, AlertTriangle, ArrowLeft, Bot, Plus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 // Helper to determine active backend API base dynamically (supports Netlify production host mappings)
@@ -25,7 +25,46 @@ export default function Inbox() {
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
 
+  // New states for "Message Anyone" feature
+  const [showNewChatInput, setShowNewChatInput] = useState(false);
+  const [newChatNumber, setNewChatNumber] = useState('');
+  const [newChatNameInput, setNewChatNameInput] = useState('');
+  const [creatingChat, setCreatingChat] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleCreateNewChat = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newChatNumber.trim()) return;
+    setCreatingChat(true);
+    try {
+      const res = await fetch(getApiUrl('/api/chats/create'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          phone: newChatNumber.trim(), 
+          name: newChatNameInput.trim() || newChatNumber.trim() 
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const updateRes = await fetch(getApiUrl('/api/chats'));
+        const updatedChats = await updateRes.json();
+        setChats(updatedChats);
+        setActiveChatPhone(data.chat.phone);
+        setIsMobileList(false);
+        setNewChatNumber('');
+        setNewChatNameInput('');
+        setShowNewChatInput(false);
+      } else {
+        alert("Error creating chat: " + data.error);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCreatingChat(false);
+    }
+  };
 
   // Poll chats from server every 2.5 seconds
   useEffect(() => {
@@ -186,7 +225,59 @@ export default function Inbox() {
       {/* Chat List */}
       <div className={`w-full md:w-1/3 border-r border-slate-100 flex flex-col ${!isMobileList ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-          <h2 className="text-xl font-bold text-slate-800">Messages</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold text-slate-800">Messages</h2>
+            <button 
+              onClick={() => setShowNewChatInput(!showNewChatInput)}
+              className="text-xs bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-lg font-semibold flex items-center gap-1 transition-colors shadow-sm"
+            >
+              {showNewChatInput ? <X size={14} /> : <Plus size={14} />}
+              {showNewChatInput ? 'Cancel' : 'Message Anyone'}
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showNewChatInput && (
+              <motion.form 
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                onSubmit={handleCreateNewChat}
+                className="overflow-hidden bg-white p-3 rounded-xl border border-slate-200 shadow-inner space-y-2.5"
+              >
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">WhatsApp Number</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. 919876543210" 
+                    value={newChatNumber}
+                    onChange={(e) => setNewChatNumber(e.target.value)}
+                    required
+                    className="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:ring-1 focus:ring-emerald-500 font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Contact Name (Optional)</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. Amit Kumar" 
+                    value={newChatNameInput}
+                    onChange={(e) => setNewChatNameInput(e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:ring-1 focus:ring-emerald-500 font-semibold"
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  disabled={creatingChat}
+                  className="w-full bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white text-xs font-bold py-1.5 rounded-lg transition-colors flex items-center justify-center gap-1"
+                >
+                  {creatingChat ? <RefreshCw className="animate-spin" size={12} /> : <Send size={12} />}
+                  {creatingChat ? 'Initializing...' : 'Open Chat & Reply'}
+                </button>
+              </motion.form>
+            )}
+          </AnimatePresence>
+
           <div className="flex gap-2 mt-3">
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">Friend Mode Active</span>
             {chats.some(c => c.status === 'needs_approval') && (
