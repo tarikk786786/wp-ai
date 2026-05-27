@@ -294,30 +294,23 @@ function initWhatsApp() {
         }
 
         // Rule B: Auto-Reply Mode (Default)
-        // If the chat is active and auto-reply is configured, send immediately!
-        // For testing, let's keep auto-reply on for regular neutral/happy messages, or put them as needs_approval so user has complete dashboard control!
-        // Let's implement an "Auto-Reply All" toggle or default to auto-replying directly if not angry.
-        if (chat.status === 'active') {
-          // Auto reply
-          await client.sendText(message.from, aiResponse.text);
-          
-          const botMessage = {
-            id: 'm_' + Date.now() + '_bot',
-            text: aiResponse.text,
-            sender: 'bot',
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          };
-          chat.messages.push(botMessage);
-          chat.lastMessage = aiResponse.text;
-          chat.suggestedReply = ""; // Clear suggestion since sent
-          db.stats.autoRepliesSent = (db.stats.autoRepliesSent || 0) + 1;
-          console.log(`[AUTO-REPLIED] Sent to ${chat.name}`);
-        } else {
-          // Awaiting manual approval
-          chat.status = 'needs_approval';
-          chat.unread = (chat.unread || 0) + 1;
-          db.stats.pendingApprovals = db.chats.filter((c: any) => c.status === 'needs_approval').length;
-        }
+        // We always auto-reply by default to ensure the bot is always active and answering!
+        chat.status = 'active';
+
+        // Auto reply physically
+        await client.sendText(message.from, aiResponse.text);
+        
+        const botMessage = {
+          id: 'm_' + Date.now() + '_bot',
+          text: aiResponse.text,
+          sender: 'bot',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        chat.messages.push(botMessage);
+        chat.lastMessage = aiResponse.text;
+        chat.suggestedReply = ""; // Clear suggestion since sent
+        db.stats.autoRepliesSent = (db.stats.autoRepliesSent || 0) + 1;
+        console.log(`[AUTO-REPLIED] Sent to ${chat.name}: ${aiResponse.text}`);
       } catch (err: any) {
         console.error("Error processing inbound WhatsApp message:", err);
         // Save user message even if AI fails
