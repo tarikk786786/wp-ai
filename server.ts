@@ -540,7 +540,19 @@ function initWhatsApp() {
   wppconnect.create({
     session: 'whatsapp-reply-agent',
     puppeteerOptions: {
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox', 
+        '--disable-dev-shm-usage', 
+        '--disable-gpu',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-software-rasterizer',
+        '--disable-extensions',
+        '--mute-audio'
+      ]
     },
     catchQR: (base64Qr, asciiQR, attempts) => {
       whatsappStatus = 'QR_CODE';
