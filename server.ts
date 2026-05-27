@@ -396,63 +396,60 @@ ${customContext}`;
       });
     }
 
-    // === OPENROUTER — Best AI Model Selection (cascade) ===
+    // === OPENROUTER — Fast Best-AI with 8s timeout ===
     const orApiKey = process.env.OPENROUTER_API_KEY || 'fe_oa_364d15fdfe33fff9edc93c97ef76a6849612021445f827ab';
     if (orApiKey) {
       const maxTok = db.settings.replyLength === 'Very Detailed (Documentation style)' ? 2000 : 
                      db.settings.replyLength === 'Medium / Detailed' ? 1000 : 600;
-      const modelsToTry = [
-        'google/gemini-2.5-flash',
-        'google/gemini-2.0-flash-001',
-        'openrouter/auto'
-      ];
-
-      for (const model of modelsToTry) {
-        try {
-          console.log(`[OPENROUTER] Trying ${model} for ${chatPhone}...`);
-          const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${orApiKey}`,
-              'Content-Type': 'application/json',
-              'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
-              'X-Title': 'Tarik Bhai AI'
-            },
-            body: JSON.stringify({
-              model,
-              messages: [
-                { role: 'system', content: systemInstruction },
-                ...contents.map(c => ({ role: c.role === 'model' ? 'assistant' : c.role, content: c.parts[0].text }))
-              ],
-              temperature: db.settings.godmode ? 0.95 : 0.82,
-              max_tokens: maxTok,
-              top_p: 0.92,
-            })
-          });
-          
-          if (orResponse.ok) {
-            const data = await orResponse.json();
-            if (data.choices && data.choices.length > 0 && data.choices[0].message?.content) {
-              let replyText = data.choices[0].message.content.trim();
-              // Strip any accidental markdown the model might produce
-              replyText = replyText
-                .replace(/\*\*(.*?)\*\*/g, '$1')
-                .replace(/\*(.*?)\*/g, '$1')
-                .replace(/_(.*?)_/g, '$1')
-                .replace(/^[\*\-\•] /gm, '')
-                .replace(/^#{1,6} /gm, '')
-                .replace(/GODMODE ENABLED:\s*/i, db.settings.godmode ? 'GODMODE ENABLED: ' : '')
-                .trim();
-              console.log(`[OPENROUTER OK] ${model} replied for ${chatPhone}: "${replyText.substring(0, 60)}..."`);
-              return { text: replyText, mood };
-            }
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+        console.log(`[OPENROUTER] Trying google/gemini-2.5-flash for ${chatPhone}...`);
+        const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${orApiKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://github.com/tarikk786786/wp-ai',
+            'X-Title': 'Tarik Bhai AI'
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              { role: 'system', content: systemInstruction },
+              ...contents.map(c => ({ role: c.role === 'model' ? 'assistant' : c.role, content: c.parts[0].text }))
+            ],
+            temperature: db.settings.godmode ? 0.95 : 0.82,
+            max_tokens: maxTok,
+            top_p: 0.92,
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        
+        if (orResponse.ok) {
+          const data = await orResponse.json();
+          if (data.choices && data.choices.length > 0 && data.choices[0].message?.content) {
+            let replyText = data.choices[0].message.content.trim();
+            replyText = replyText
+              .replace(/\*\*(.*?)\*\*/g, '$1')
+              .replace(/\*(.*?)\*/g, '$1')
+              .replace(/_(.*?)_/g, '$1')
+              .replace(/^[\*\-\•] /gm, '')
+              .replace(/^#{1,6} /gm, '')
+              .replace(/GODMODE ENABLED:\s*/i, db.settings.godmode ? 'GODMODE ENABLED: ' : '')
+              .trim();
+            console.log(`[OPENROUTER OK] Reply for ${chatPhone}: "${replyText.substring(0, 60)}..."`);
+            return { text: replyText, mood };
           }
-          // Model didn't work, try next
-        } catch (orErr) {
-          console.warn(`[OPENROUTER] ${model} failed, trying next...`, (orErr as any)?.message);
+        }
+      } catch (orErr: any) {
+        if (orErr?.name === 'AbortError') {
+          console.warn('[OPENROUTER] Timeout after 8s, falling back to Gemini...');
+        } else {
+          console.warn('[OPENROUTER] Failed, falling back to Gemini...', orErr?.message);
         }
       }
-      console.warn('[OPENROUTER] All models failed, falling back to direct Gemini...');
     }
 
     // === CALL GEMINI — try primary model, fall back to lite if needed ===
@@ -574,8 +571,10 @@ ${customContext}`;
 // =============================================================
 // WHATSAPP CLIENT INITIALIZATION
 // =============================================================
+let isWhatsAppInitializing = false;
 function initWhatsApp() {
-  if (whatsappClient) return;
+  if (whatsappClient || isWhatsAppInitializing) return;
+  isWhatsAppInitializing = true;
 
   whatsappStatus = 'CONNECTING';
   db.stats.whatsappApiStatus = 'degraded';
@@ -610,11 +609,16 @@ function initWhatsApp() {
         '--disable-gpu',
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
-        '--no-zygote',
-        '--single-process',
         '--disable-software-rasterizer',
         '--disable-extensions',
-        '--mute-audio'
+        '--mute-audio',
+        '--disable-background-networking',
+        '--disable-default-apps',
+        '--disable-sync',
+        '--disable-translate',
+        '--metrics-recording-only',
+        '--no-default-browser-check',
+        '--js-flags=--max-old-space-size=256'
       ]
     },
     catchQR: (base64Qr, asciiQR, attempts) => {
@@ -630,14 +634,14 @@ function initWhatsApp() {
         whatsappClient = null;
         qrCodeData = null;
         saveDb();
-        // Auto-reconnect after 10 seconds on unexpected disconnect
-        console.log('[AUTO-RECONNECT] Disconnected unexpectedly. Reconnecting in 10s...');
+        // Auto-reconnect after 30 seconds — longer delay to prevent rapid crash loops
+        console.log('[AUTO-RECONNECT] Disconnected. Reconnecting in 30s...');
         setTimeout(() => {
-          if (whatsappStatus === 'DISCONNECTED') {
+          if (whatsappStatus === 'DISCONNECTED' && !whatsappClient) {
             console.log('[AUTO-RECONNECT] Attempting reconnection...');
             initWhatsApp();
           }
-        }, 10000);
+        }, 30000);
       }
     },
     headless: true,
@@ -658,6 +662,7 @@ function initWhatsApp() {
     ]
   })
   .then((client) => {
+    isWhatsAppInitializing = false;
     whatsappClient = client;
     whatsappStatus = 'CONNECTED';
     qrCodeData = null;
@@ -867,6 +872,7 @@ Main waqt se aage chalta hoon.`;
 
   })
   .catch((err) => {
+    isWhatsAppInitializing = false;
     whatsappStatus = 'DISCONNECTED';
     connectionError = err.message || "Failed to launch browser instance.";
     db.stats.whatsappApiStatus = 'offline';
