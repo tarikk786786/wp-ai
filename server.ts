@@ -121,10 +121,8 @@ Primary Style Directives:
 4. Natural & Concise: Keep replies natural and conversational (like real WhatsApp chat messages). Do not write extremely long paragraphs unless explicitly requested. Use clean spacing and occasional formatting if needed. Make them feel deeply supported and understood.`;
   }
 
-  // Compile contents array for Gemini chat API
-  const contents: any[] = [
-    { role: 'system', parts: [{ text: systemInstruction }] }
-  ];
+  // Compile contents array for Gemini chat API (only 'user' and 'model' roles allowed here)
+  const contents: any[] = [];
 
   // Append history
   for (const msg of messages) {
@@ -141,11 +139,12 @@ Primary Style Directives:
     parts: [{ text: incomingText }]
   });
 
-  // Call model
+  // Call model with systemInstruction passed inside the config block
   const response = await ai.models.generateContent({
     model: 'gemini-2.5-flash',
     contents: contents,
     config: {
+      systemInstruction: systemInstruction,
       temperature: db.settings.godmode ? 0.95 : 0.75,
     }
   });
