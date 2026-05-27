@@ -110,7 +110,7 @@ Your core identity remains: You are Tarik Bhai's highly advanced, emotionally in
 
 Directives for 100% human-like WhatsApp behavior:
 1. NEVER use markdown formatting like asterisks (**bold**), underscores (_italic_), or bulleted lists. WhatsApp messages must look like a real person typed them. Write bold text simply as plain text without asterisks.
-2. Keep replies extremely concise, natural, and direct (maximum 2-3 short sentences) to feel like a quick WhatsApp chat. Only write long replies if the user explicitly asks for extensive explanation/analysis.
+2. Keep replies extremely brief, snappy, and conversational (exactly 1 sentence, maximum 10-15 words). Real people on WhatsApp write short, fast messages instead of long paragraphs. Only write more if details are requested.
 3. DO NOT use generic robotic greetings or robotic prefixes. Do not use generic "bhai" or "bahen" references.
 4. Speak natively in Roman Urdu/Hinglish. Use casual transitions (like 'haan', 'accha', 'sahi hai', 'ek baat batao') to sound like a close friend.`;
   } else {
@@ -126,7 +126,7 @@ Main sirf aaj ka answer nahi deta. Main kal ki possibility dekhta hoon. Main saw
 
 Directives for 100% human-like WhatsApp behavior:
 1. NEVER use markdown formatting like asterisks (**bold**), underscores (_italic_), or bulleted lists. Write all lists and text as plain, simple conversational lines.
-2. Keep replies short, natural, and highly engaging (maximum 2-3 sentences) to maintain lightning-fast response times. Only write long replies if the user specifically requests deep detailed information.
+2. Keep replies extremely brief, snappy, and conversational (exactly 1 sentence, maximum 10-15 words). Real people on WhatsApp write short, fast messages instead of long paragraphs. Only write more if details are requested.
 3. DO NOT use generic "bhai" or "bahen" references in your replies unless the user explicitly refers to you that way.
 4. Use casual, natural Roman Urdu/Hinglish phrasing with natural spacing and friendly, warm tone like a highly intelligent human friend.`;
   }
@@ -151,12 +151,12 @@ Directives for 100% human-like WhatsApp behavior:
 
   // Call model with systemInstruction passed inside the config block
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.0-flash-lite',
     contents: contents,
     config: {
       systemInstruction: systemInstruction,
       temperature: db.settings.godmode ? 0.95 : 0.75,
-      maxOutputTokens: 200,
+      maxOutputTokens: 100,
     }
   });
 
@@ -260,11 +260,9 @@ function initWhatsApp() {
       chat.lastMessage = text;
       chat.timestamp = userMessage.timestamp;
 
-      // Simulate native human typing status
-      try {
-        await client.startTyping(message.from);
-        console.log(`[TYPING STATUS] Started typing indicator for ${senderName}...`);
-      } catch (e) {}
+      // Simulate native human typing status (non-blocking for lightning speed!)
+      client.startTyping(message.from).catch(() => {});
+      console.log(`[TYPING STATUS] Triggered typing indicator for ${senderName}...`);
 
       // 3. Generate suggestion and mood
       try {
@@ -288,10 +286,8 @@ function initWhatsApp() {
           routeToApproval = true;
         }
 
-        // Stop typing indicator before sending
-        try {
-          await client.stopTyping(message.from);
-        } catch (e) {}
+        // Stop typing indicator (non-blocking)
+        client.stopTyping(message.from).catch(() => {});
 
         if (routeToApproval) {
           saveDb();
