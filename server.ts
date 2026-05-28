@@ -11,7 +11,20 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// =============================================================
+// GLOBAL ERROR HANDLERS (Ensures bot doesn't freeze silently)
+// =============================================================
+process.on('uncaughtException', (err) => {
+  console.error('[FATAL] Uncaught Exception:', err);
+  process.exit(1); // Exit immediately to let Windows Service/PM2 restart the bot cleanly
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[WARNING] Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 // Load environment variables from .env.local or .env
+
 dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 dotenv.config();
 
@@ -880,6 +893,14 @@ Main waqt se aage chalta hoon.`;
     qrCodeData = null;
     saveDb();
     console.error("❌ Failed to initialize WhatsApp:", err?.message);
+    
+    // Auto-retry after a failure to ensure 100% uptime
+    console.log("[AUTO-RECONNECT] Retrying initialization in 15 seconds...");
+    setTimeout(() => {
+      if (whatsappStatus === 'DISCONNECTED' && !whatsappClient) {
+        initWhatsApp();
+      }
+    }, 15000);
   });
 }
 
