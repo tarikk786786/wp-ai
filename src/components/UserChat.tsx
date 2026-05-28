@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sun, Moon, Trash2, MessageSquare, Sparkles, AlertCircle, ThumbsUp, ArrowDown, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Send, Sun, Moon, Trash2, MessageSquare, Sparkles, AlertCircle, ThumbsUp, ArrowDown, Zap, Shield } from 'lucide-react';
 
 interface Message {
   role: 'user' | 'model';
@@ -19,6 +20,7 @@ const QUICK_PROMPTS = [
 ];
 
 export default function UserChat() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
       const saved = localStorage.getItem('tarik-ai-chat');
@@ -149,6 +151,9 @@ export default function UserChat() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => navigate('/admin')} title="Admin Access" className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-white/10 text-cyan-500' : 'hover:bg-gray-100 text-blue-600'}`}>
+            <Shield size={18} />
+          </button>
           <button onClick={() => setDarkMode(!darkMode)} className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-white/10 text-gray-400' : 'hover:bg-gray-100 text-gray-600'}`}>
             {darkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>

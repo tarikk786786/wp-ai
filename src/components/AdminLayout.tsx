@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, MessageSquare, Users, Settings as SettingsIcon, Shield, LogOut, Zap, Menu, X, Bell, ToggleLeft, ToggleRight } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Users, Settings as SettingsIcon, Shield, LogOut, Zap, Menu, X, Bell, ToggleLeft, ToggleRight, Phone } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
 import AdminChats from './AdminChats';
 import AdminUsers from './AdminUsers';
 import AdminSettings from './Settings';
+import AdminRules from './Rules';
 
 interface AdminLayoutProps {
   token: string;
@@ -13,6 +14,7 @@ interface AdminLayoutProps {
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'chats', label: 'Chats', icon: MessageSquare },
+  { id: 'whatsapp', label: 'WhatsApp Bot', icon: Phone },
   { id: 'users', label: 'Users', icon: Users },
   { id: 'settings', label: 'Settings', icon: SettingsIcon },
 ];
@@ -44,6 +46,7 @@ export default function AdminLayout({ token, onLogout }: AdminLayoutProps) {
     switch (currentView) {
       case 'dashboard': return <AdminDashboard token={token} />;
       case 'chats': return <AdminChats token={token} />;
+      case 'whatsapp': return <AdminRules />;
       case 'users': return <AdminUsers token={token} />;
       case 'settings': return <AdminSettings token={token} />;
       default: return <AdminDashboard token={token} />;
