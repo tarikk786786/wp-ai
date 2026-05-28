@@ -1,19 +1,13 @@
 services:
   - type: web
-    name: tarik-ai-whatsapp-bot
+    name: tarik-ai-bot
     env: docker
     plan: free
-    healthCheckPath: /
+    healthCheckPath: /api/status
     envVars:
       - key: PORT
         value: 3001
-      - key: GEMINI_API_KEY
-        value: "AIzaSyAXy42Ua7q19KwSH1FlVcl5ik5ZqGggI6Q"
-      - key: GEMINI_API_KEY_2
-        value: "AIzaSyAr_FDVqs91DByTV_mrRIql02Sm7c0Ncl8"
-      - key: FEATHERLESS_API_KEY
-        value: "fe_oa_4fe289b7c40d918258d30e8f4f08ec1936cd244d95d7134e"
-    disk:
-      name: whatsapp-session-data
-      mountPath: /app/tokens
-      sizeGB: 1
+      - key: WP_BOT_BACKEND_URL
+        value: "" 
+      - key: VITE_BACKEND_URL
+        value: ""

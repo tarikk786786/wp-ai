@@ -1,67 +1,35 @@
-# Use official Node.js slim runtime as base
-FROM node:20-slim
+FROM node:20-bullseye-slim
 
-# Install necessary system libraries for headless Chrome and Puppeteer dependencies
+# Install necessary dependencies for Puppeteer and Chromium
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     ca-certificates \
     procps \
-    libnss3 \
-    libasound2 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libc6 \
-    libcairo2 \
-    libcups2 \
-    libdbus-1-3 \
-    libexpat1 \
-    libfontconfig1 \
-    libgbm1 \
-    libgcc1 \
-    libgdk-pixbuf2.0-0 \
-    libglib2.0-0 \
-    libgtk-3-0 \
-    libnspr4 \
-    libpango-1.0-0 \
-    libpangocairo-1.0-0 \
-    libstdc++6 \
-    libx11-6 \
-    libx11-xcb1 \
-    libxcb1 \
-    libxcomposite1 \
-    libxcursor1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxi6 \
-    libxrandr2 \
-    libxrender1 \
     libxss1 \
-    libxtst6 \
-    fonts-liberation \
-    libappindicator3-1 \
-    xdg-utils \
-    --no-install-recommends \
+    libnss3 \
+    libatk-bridge2.0-0 \
+    libgtk-3-0 \
+    libgbm-dev \
+    libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory inside container
 WORKDIR /app
 
-# Copy dependency files
+# Copy package files
 COPY package*.json ./
 
-# Install npm packages
+# Install dependencies
 RUN npm install
 
-# Copy entire application source code
+# Copy all project files
 COPY . .
 
-# Build the frontend assets to the dist folder
-RUN npm run build
+# Build the frontend (if needed, though Vercel handles it)
+# RUN npm run build
 
-# Expose backend REST API port
+# Expose the port Render will use
 EXPOSE 3001
 
-# Run the Express backend server
+# Start the Node backend server
 CMD ["npx", "tsx", "server.ts"]
