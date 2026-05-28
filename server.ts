@@ -287,14 +287,16 @@ async function generateAiReply(
 
   // === GET AVAILABLE API KEYS (rotates automatically when quota hit) ===
   const availableKeys = getActiveApiKeys();
-  if (availableKeys.length === 0) {
-    console.warn('[NO API KEY] No valid Gemini API key configured.');
+  const orApiKey = process.env.OPENROUTER_API_KEY || 'fe_oa_927d7c731d50252c34c970449d9981619daddf5beda72463';
+  
+  if (availableKeys.length === 0 && !orApiKey) {
+    console.warn('[NO API KEY] No valid API key configured.');
     return { text: generateLocalFallbackReply(safeText, cleanMessages), mood };
   }
 
   // Pick first non-exhausted key, or reset if all exhausted (new day)
-  let activeKey = availableKeys.find(k => !keyQuotaExhausted[k]);
-  if (!activeKey) {
+  let activeKey = availableKeys.length > 0 ? availableKeys.find(k => !keyQuotaExhausted[k]) : undefined;
+  if (!activeKey && availableKeys.length > 0) {
     // All keys hit quota — reset flags (may have reset with new day)
     Object.keys(keyQuotaExhausted).forEach(k => delete keyQuotaExhausted[k]);
     activeKey = availableKeys[0];
@@ -309,7 +311,7 @@ async function generateAiReply(
     }
     lastApiCallTime = Date.now();
 
-    const ai = new GoogleGenAI({ apiKey: activeKey });
+    const ai = activeKey ? new GoogleGenAI({ apiKey: activeKey }) : null;
 
     // === DYNAMIC SYSTEM PROMPT ===
     const emojiGuide = db.settings.emojiLevel === 'High (Very expressive)' ? 'Use emojis freely (2-3 per message).' :
@@ -469,52 +471,56 @@ ${customContext}`;
     // Primary: gemini-2.0-flash (high quota, fast, capable)
     // Fallback: gemini-2.5-flash-lite (backup if primary quota hits)
     let response: any;
-    try {
-      response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents,
-        config: {
-          systemInstruction,
-          temperature: db.settings.godmode ? 0.95 : 0.82,
-          maxOutputTokens: db.settings.replyLength === 'Very Detailed (Documentation style)' ? 2000 : 
-                           db.settings.replyLength === 'Medium / Detailed' ? 1000 : 600,
-          topP: 0.92,
-          topK: 40,
-        }
-      });
-    } catch (modelErr: any) {
-      if (modelErr?.status === 429 || modelErr?.status === 'RESOURCE_EXHAUSTED' || JSON.stringify(modelErr).includes('429') || modelErr?.message?.toLowerCase().includes('quota')) {
-        // Primary quota exceeded — try lite model
-        console.warn('[MODEL SWITCH] gemini-2.0-flash quota hit, trying gemini-2.5-flash-lite...');
+    if (ai) {
+      try {
         response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash-lite',
+          model: 'gemini-2.0-flash',
           contents,
           config: {
             systemInstruction,
-            temperature: db.settings.godmode ? 0.9 : 0.78,
-            maxOutputTokens: 1000,
-            topP: 0.9,
+            temperature: db.settings.godmode ? 0.95 : 0.82,
+            maxOutputTokens: db.settings.replyLength === 'Very Detailed (Documentation style)' ? 2000 : 
+                             db.settings.replyLength === 'Medium / Detailed' ? 1000 : 600,
+            topP: 0.92,
+            topK: 40,
           }
         });
-      } else {
-        throw modelErr;
+      } catch (modelErr: any) {
+        if (modelErr?.status === 429 || modelErr?.status === 'RESOURCE_EXHAUSTED' || JSON.stringify(modelErr).includes('429') || modelErr?.message?.toLowerCase().includes('quota')) {
+          // Primary quota exceeded — try lite model
+          console.warn('[MODEL SWITCH] gemini-2.0-flash quota hit, trying gemini-2.5-flash-lite...');
+          response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-lite',
+            contents,
+            config: {
+              systemInstruction,
+              temperature: db.settings.godmode ? 0.9 : 0.78,
+              maxOutputTokens: 1000,
+              topP: 0.9,
+            }
+          });
+        } else {
+          throw modelErr;
+        }
       }
+
+      let replyText = response.text?.trim() || "Main yahan hoon. Ek baar phir se batayein?";
+      
+      // Strip any accidental markdown the model might produce
+      replyText = replyText
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/_(.*?)_/g, '$1')
+        .replace(/^[\*\-\•] /gm, '')
+        .replace(/^#{1,6} /gm, '')
+        .replace(/GODMODE ENABLED:\s*/i, db.settings.godmode ? 'GODMODE ENABLED: ' : '')
+        .trim();
+
+      console.log(`[GEMINI OK] Reply for ${chatPhone}: "${replyText.substring(0, 60)}..."`);
+      return { text: replyText, mood };
+    } else {
+      throw new Error("No Gemini API key available to fallback.");
     }
-
-    let replyText = response.text?.trim() || "Main yahan hoon. Ek baar phir se batayein?";
-    
-    // Strip any accidental markdown the model might produce
-    replyText = replyText
-      .replace(/\*\*(.*?)\*\*/g, '$1')
-      .replace(/\*(.*?)\*/g, '$1')
-      .replace(/_(.*?)_/g, '$1')
-      .replace(/^[\*\-\•] /gm, '')
-      .replace(/^#{1,6} /gm, '')
-      .replace(/GODMODE ENABLED:\s*/i, db.settings.godmode ? 'GODMODE ENABLED: ' : '')
-      .trim();
-
-    console.log(`[GEMINI OK] Reply for ${chatPhone}: "${replyText.substring(0, 60)}..."`);
-    return { text: replyText, mood };
 
   } catch (err: any) {
     const errMsg = err?.message || String(err);
