@@ -24,8 +24,15 @@ export default function AdminLayout({ token, onLogout }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [maintenance, setMaintenance] = useState(false);
 
+  const getApiUrl = (path: string) => {
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return `http://localhost:3001${path}`;
+    }
+    return path;
+  };
+
   useEffect(() => {
-    fetch('/api/admin/analytics', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(getApiUrl('/api/admin/analytics'), { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
       .then(d => { if (d.maintenance !== undefined) setMaintenance(d.maintenance); })
       .catch(() => {});
@@ -33,7 +40,7 @@ export default function AdminLayout({ token, onLogout }: AdminLayoutProps) {
 
   const toggleMaintenance = async () => {
     try {
-      const res = await fetch('/api/admin/maintenance', {
+      const res = await fetch(getApiUrl('/api/admin/maintenance'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ enabled: !maintenance })

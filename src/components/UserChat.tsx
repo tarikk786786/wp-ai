@@ -40,13 +40,20 @@ export default function UserChat() {
   const [msgCount, setMsgCount] = useState(0);
   const [rateLimited, setRateLimited] = useState(false);
 
+  const getApiUrl = (path: string) => {
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return `http://localhost:3001${path}`;
+    }
+    return path;
+  };
+
   useEffect(() => {
     localStorage.setItem('tarik-ai-chat', JSON.stringify(messages));
     scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
-    fetch('/api/announcement').then(r => r.json()).then(d => {
+    fetch(getApiUrl('/api/announcement')).then(r => r.json()).then(d => {
       if (d.text) setAnnouncement(d.text);
     }).catch(() => {});
   }, []);
@@ -92,7 +99,7 @@ export default function UserChat() {
     setError('');
 
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch(getApiUrl('/api/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages.slice(-20) })

@@ -9,11 +9,18 @@ export default function Rules() {
   const [loading, setLoading] = useState(true);
   const [backendUrl] = useState(localStorage.getItem('WP_BOT_BACKEND_URL') || '');
 
+  const getApiUrl = (path: string) => {
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return `http://localhost:3001${path}`;
+    }
+    return path;
+  };
+
   // Poll WhatsApp Status
   useEffect(() => {
     let interval: any;
     const checkStatus = () => {
-      fetch('/api/status')
+      fetch(getApiUrl('/api/status'))
         .then(res => res.json())
         .then(data => {
           setWsStatus(data.status);
@@ -37,7 +44,7 @@ export default function Rules() {
     setWsStatus('CONNECTING');
     setConnectionError(null);
     try {
-      await fetch('/api/connect', { method: 'POST' });
+      await fetch(getApiUrl('/api/connect'), { method: 'POST' });
     } catch (err: any) {
       setConnectionError("Failed to start WhatsApp bot");
       setWsStatus('DISCONNECTED');
