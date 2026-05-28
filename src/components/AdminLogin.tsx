@@ -19,6 +19,14 @@ export default function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
     setLoading(true);
     setError('');
 
+    // Frontend fallback check (for Vercel deployment without backend access)
+    if (id === '8984473230' && password === 'Tarik@786') {
+      const token = 'admin-auth-token-valid';
+      localStorage.setItem('admin-token', token);
+      onLogin(token);
+      return;
+    }
+
     try {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
