@@ -11,7 +11,7 @@ export default function Rules() {
 
   const getApiUrl = (path: string) => {
     if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      return `http://localhost:3001${path}`;
+      return `http://127.0.0.1:3001${path}`;
     }
     return path;
   };
