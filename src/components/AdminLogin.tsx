@@ -7,6 +7,7 @@ interface AdminLoginProps {
 }
 
 export default function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
+  const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
@@ -14,7 +15,7 @@ export default function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!password.trim()) return;
+    if (!id.trim() || !password.trim()) return;
     setLoading(true);
     setError('');
 
@@ -22,7 +23,7 @@ export default function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ id, password })
       });
 
       const data = await res.json();
@@ -65,13 +66,22 @@ export default function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
           <p className="text-gray-500 text-center text-sm mb-8">Enter admin password to continue</p>
 
           <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <input
+                type="text"
+                value={id}
+                onChange={e => setId(e.target.value)}
+                placeholder="Enter admin ID"
+                autoFocus
+                className="w-full px-4 py-3 bg-white/10 border border-white/15 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 text-sm"
+              />
+            </div>
             <div className="relative">
               <input
                 type={showPass ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 placeholder="Enter admin password"
-                autoFocus
                 className="w-full px-4 py-3 bg-white/10 border border-white/15 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 pr-12 text-sm"
               />
               <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
@@ -85,7 +95,7 @@ export default function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
 
             <button
               type="submit"
-              disabled={loading || !password.trim()}
+              disabled={loading || !id.trim() || !password.trim()}
               className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-xl font-semibold transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20"
             >
               {loading ? (

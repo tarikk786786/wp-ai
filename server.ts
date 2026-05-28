@@ -1314,6 +1314,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Admin Routes
+app.post('/api/admin/login', (req, res) => {
+  const { id, password } = req.body;
+  if (id === '8984473230' && password === 'Tarik@786') {
+    res.json({ token: 'admin-auth-token-valid' });
+  } else {
+    res.status(401).json({ error: 'Invalid ID or password' });
+  }
+});
+
+app.get('/api/admin/analytics', (req, res) => {
+  if (!req.headers.authorization) return res.status(401).json({ error: 'Unauthorized' });
+  res.json({ maintenance: false });
+});
+
+app.post('/api/admin/maintenance', (req, res) => {
+  if (!req.headers.authorization) return res.status(401).json({ error: 'Unauthorized' });
+  res.json({ success: true });
+});
+
 // Serve frontend assets in production build
 const distPath = path.resolve(__dirname, 'dist');
 if (fs.existsSync(distPath)) {
