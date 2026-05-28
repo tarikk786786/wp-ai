@@ -618,7 +618,8 @@ function initWhatsApp() {
       args: [
         '--no-sandbox', 
         '--disable-setuid-sandbox', 
-        '--disable-dev-shm-usage', 
+        '--disable-dev-shm-usage',
+        '--single-process', 
         '--disable-gpu',
         '--disable-accelerated-2d-canvas',
         '--no-first-run',
