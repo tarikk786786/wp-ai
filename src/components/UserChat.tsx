@@ -41,6 +41,9 @@ export default function UserChat() {
   const [rateLimited, setRateLimited] = useState(false);
 
   const getApiUrl = (path: string) => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    if (backendUrl) return `${backendUrl.replace(/\/$/, '')}${path}`;
+    
     if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
       return `http://127.0.0.1:3001${path}`;
     }
