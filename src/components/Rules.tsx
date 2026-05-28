@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Phone, CheckCircle, AlertTriangle, RefreshCw, Smartphone, QrCode } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
 
 export default function Rules() {
   const [wsStatus, setWsStatus] = useState<'DISCONNECTED' | 'QR_CODE' | 'CONNECTING' | 'CONNECTED'>('DISCONNECTED');
@@ -115,8 +114,8 @@ export default function Rules() {
           <div className="flex flex-col items-center justify-center py-2 h-full min-h-[200px]">
             {wsStatus === 'QR_CODE' && qrCode ? (
               <div className="space-y-4 flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                <div className="bg-white p-4 rounded-2xl">
-                  <QRCodeSVG value={qrCode} size={180} />
+                <div className="bg-white p-4 rounded-2xl flex justify-center items-center overflow-hidden">
+                  <img src={qrCode} alt="WhatsApp QR Code" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
                 </div>
                 <p className="text-sm text-gray-400 text-center">Scan with WhatsApp to link device</p>
               </div>
