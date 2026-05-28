@@ -1,12 +1,12 @@
 services:
-  - type: web
+  - type: web_service
     name: tarik-ai-bot
     env: docker
     plan: free
     healthCheckPath: /api/status
     envVars:
       - key: PORT
-        value: 3001
+        value: "3001"
       - key: WP_BOT_BACKEND_URL
         value: "" 
       - key: VITE_BACKEND_URL
