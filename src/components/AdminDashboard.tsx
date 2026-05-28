@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MessageSquare, Users, Zap, TrendingUp, Clock, Bot, Activity, Shield } from 'lucide-react';
+import AdminRules from './Rules';
 
 interface AdminDashboardProps {
   token: string;
@@ -66,6 +67,11 @@ export default function AdminDashboard({ token }: AdminDashboardProps) {
 
   return (
     <div className="space-y-6 max-w-6xl">
+      {/* Embedded WhatsApp Bot Manager */}
+      <div className="bg-white/5 border border-white/8 rounded-2xl p-2 mb-8">
+        <AdminRules />
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {cards.map((card, i) => (

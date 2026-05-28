@@ -11,8 +11,7 @@ export default function Rules() {
 
   const getApiUrl = (path: string) => {
     // @ts-ignore
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    if (backendUrl) return `${backendUrl.replace(/\/$/, '')}${path}`;
+    if (import.meta.env.VITE_BACKEND_URL) return `${import.meta.env.VITE_BACKEND_URL.replace(/\/$/, '')}${path}`;
     
     if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
       return `http://127.0.0.1:3001${path}`;
@@ -56,7 +55,7 @@ export default function Rules() {
   };
 
   const getStatusDisplay = () => {
-    if (loading) return { text: "Checking Status...", color: "text-gray-400", bg: "bg-gray-500/10", icon: <RefreshCw className="animate-spin" size={24} /> };
+    if (loading) return { text: "Waking up Server...", color: "text-gray-400", bg: "bg-gray-500/10", icon: <RefreshCw className="animate-spin" size={24} /> };
     switch (wsStatus) {
       case 'CONNECTED':
         return { text: "Bot Active", color: "text-emerald-400", bg: "bg-emerald-500/10", icon: <CheckCircle size={24} /> };
