@@ -3,7 +3,7 @@ import { LayoutDashboard, MessageSquare, Users, Settings as SettingsIcon, Shield
 import AdminDashboard from './AdminDashboard';
 import AdminChats from './AdminChats';
 import AdminUsers from './AdminUsers';
-import AdminSettings from './AdminSettings';
+import AdminSettings from './Settings';
 
 interface AdminLayoutProps {
   token: string;

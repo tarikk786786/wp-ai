@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Send, Sun, Moon, Trash2, MessageSquare, Sparkles, AlertCircle, ThumbsUp, ArrowDown, Zap } from 'lucide-react';
 
 interface Message {
